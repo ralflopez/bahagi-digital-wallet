@@ -2,7 +2,7 @@ import { ObjectType, Field, ID, GraphQLISODateTime } from '@nestjs/graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from '../enums/role.enum';
 
-@Entity('users')
+@Entity('user')
 @ObjectType()
 export class User {
   @PrimaryGeneratedColumn('uuid')

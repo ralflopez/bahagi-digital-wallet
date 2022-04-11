@@ -9,6 +9,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { GQLContext } from './graphql/types';
+import { CountriesModule } from './countries/countries.module';
+import { Country } from './countries/entities/country.entity';
+import { Currency } from './countries/entities/currency.entity';
 
 @Module({
   imports: [
@@ -27,10 +30,11 @@ import { GQLContext } from './graphql/types';
       password: 'password',
       database: 'db',
       synchronize: true,
-      entities: [User],
+      entities: [User, Country, Currency],
     }),
     UsersModule,
     AuthModule,
+    CountriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

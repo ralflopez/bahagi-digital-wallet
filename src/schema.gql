@@ -2,10 +2,31 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Country {
+  currency: Currency!
+  id: ID!
+  mobileCode: String!
+  name: String!
+}
+
+input CreateCountryInput {
+  currencyName: String!
+  currencySymbol: String!
+  id: String!
+  mobileCode: String!
+  name: String!
+}
+
 input CreateUserInput {
   email: String!
   name: String!
   password: String!
+}
+
+type Currency {
+  id: ID!
+  name: String!
+  symbol: String!
 }
 
 """
@@ -19,14 +40,18 @@ input LogInInput {
 }
 
 type Mutation {
+  createCountry(createCountryInput: CreateCountryInput!): Country!
   createUser(createUserInput: CreateUserInput!): User!
   logIn(logIninput: LogInInput!): User!
+  removeCountry(id: String!): String!
   removeUser(id: String!): String!
   signUp(signUpInput: SignUpInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
+  countries: [Country!]!
+  country(id: String!): Country!
   user(id: String!): User!
   users: [User!]!
 }
