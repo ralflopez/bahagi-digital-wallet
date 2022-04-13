@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@babel/runtime": "^7.17.9",
     "@nestjs/apollo": "^10.0.8",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
@@ -30,6 +31,7 @@
     "@types/bcrypt": "^5.0.0",
     "apollo-server-express": "^3.6.7",
     "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.0",
     "express-session": "^1.17.2",
     "graphql": "^16.3.0",
     "paymongo": "^1.2.2",
