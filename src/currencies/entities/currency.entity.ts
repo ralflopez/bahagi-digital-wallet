@@ -1,10 +1,10 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('currency')
 @ObjectType()
 export class Currency {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   @Field(() => ID)
   readonly id: string;
 
