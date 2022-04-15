@@ -24,7 +24,7 @@ export class CountriesResolver {
     return this.countriesService.findOne(id);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => Int)
   removeCountry(@Args('id') id: string) {
     return this.countriesService.remove(id);
   }

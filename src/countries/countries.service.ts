@@ -3,52 +3,58 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCountryInput } from './dto/create-country.input';
 import { Country } from './entities/country.entity';
-import { Currency } from './entities/currency.entity';
+import { CurrenciesService } from 'src/currencies/currencies.service';
 
 @Injectable()
 export class CountriesService {
   constructor(
     @InjectRepository(Country) private countryRepository: Repository<Country>,
-    @InjectRepository(Currency)
-    private currencyRepository: Repository<Currency>,
+    private currencyService: CurrenciesService,
   ) {}
 
-  async create(createCountryInput: CreateCountryInput) {
-    // create currency
-    const currency = this.currencyRepository.create({
-      name: createCountryInput.currencyName,
-      symbol: createCountryInput.currencySymbol,
-    });
-
-    const savedCurrency = await this.currencyRepository.save(currency);
+  async create(createCountryInput: CreateCountryInput): Promise<Country> {
+    // get currency currency
+    const currency = await this.currencyService.findOne(
+      createCountryInput.currencyId,
+    );
+    if (!currency)
+      throw new Error(
+        `Currency: ${createCountryInput.currencyId} does not exist`,
+      );
 
     // create country
     const country = this.countryRepository.create({
-      currency: savedCurrency,
+      currency,
       mobileCode: createCountryInput.mobileCode,
       name: createCountryInput.name,
       id: createCountryInput.id,
     });
 
     const savedCountry = await this.countryRepository.save(country);
-
     return savedCountry;
   }
 
-  findAll() {
-    return this.countryRepository.find();
+  async findAll(): Promise<Country[]> {
+    return this.countryRepository.find({
+      relations: {
+        currency: true,
+      },
+    });
   }
 
-  findOne(id: string) {
+  findOne(id: string): Promise<Country> {
     return this.countryRepository.findOne({
+      relations: {
+        currency: true,
+      },
       where: {
         id,
       },
     });
   }
 
-  async remove(id: string) {
-    await this.countryRepository.delete(id);
-    return id;
+  async remove(id: string): Promise<number> {
+    const result = await this.countryRepository.delete(id);
+    return result.affected || 0;
   }
 }

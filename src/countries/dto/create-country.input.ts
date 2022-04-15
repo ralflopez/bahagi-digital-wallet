@@ -9,10 +9,7 @@ export class CreateCountryInput {
   id: string;
 
   @Field()
-  currencyName: string;
-
-  @Field()
-  currencySymbol: string;
+  currencyId: string;
 
   @Field()
   mobileCode: string;

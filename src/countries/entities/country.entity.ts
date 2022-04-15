@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { Currency } from './currency.entity';
+import { Currency } from '../../currencies/entities/currency.entity';
 
 @Entity('country')
 @ObjectType()
@@ -15,9 +15,12 @@ export class Country {
   name: string;
 
   @OneToOne(() => Currency)
-  @JoinColumn()
+  @JoinColumn({ name: 'currencyId' })
   @Field(() => Currency)
   currency: Currency;
+
+  @Column()
+  currencyId: string;
 
   @Column()
   @Field()
