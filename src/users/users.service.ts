@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CountriesService } from 'src/countries/countries.service';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -8,17 +9,33 @@ import { User } from './entities/user.entity';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    private readonly countryService: CountriesService,
   ) {}
 
   async create(createUserInput: CreateUserInput) {
-    const user = this.usersRepository.create(createUserInput);
-    await this.usersRepository.save(user);
-    return user;
+    const country = await this.countryService.findOne(
+      createUserInput.countryId,
+    );
+    if (!country) throw new Error('Invalid country id');
+
+    const user = this.usersRepository.create({
+      ...createUserInput,
+      country,
+    });
+
+    const savedUser = await this.usersRepository.save(user);
+    return savedUser;
   }
 
   async findAll() {
-    const users = await this.usersRepository.find();
+    const users = await this.usersRepository.find({
+      relations: {
+        country: {
+          currency: true,
+        },
+      },
+    });
     return users;
   }
 
@@ -26,6 +43,11 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       where: {
         id,
+      },
+      relations: {
+        country: {
+          currency: true,
+        },
       },
     });
 
@@ -36,6 +58,11 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       where: {
         email,
+      },
+      relations: {
+        country: {
+          currency: true,
+        },
       },
     });
 

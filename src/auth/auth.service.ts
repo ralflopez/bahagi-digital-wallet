@@ -16,7 +16,8 @@ export class AuthService {
       password: passwordHash,
     };
 
-    return this.userService.create(createUserInput);
+    const newUser = await this.userService.create(createUserInput);
+    return newUser;
   }
 
   async logIn(loginInput: LogInInput) {

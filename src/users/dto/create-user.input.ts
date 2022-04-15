@@ -10,4 +10,10 @@ export class CreateUserInput {
 
   @Field()
   password: string;
+
+  @Field()
+  phoneNumber: string;
+
+  @Field()
+  countryId: string;
 }
