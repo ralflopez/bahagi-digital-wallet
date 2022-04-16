@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import * as Paymongo from 'paymongo';
 import * as dotenv from 'dotenv';
@@ -50,7 +49,7 @@ export class PaymongoService implements OnApplicationBootstrap {
    * @param {string} id Webhook id
    */
   async getWebhook(id: string) {
-    const result = await paymongo.webhooks.retrieve(id);
+    const result = await this.paymongo.webhooks.retrieve(id);
     return result;
   }
 
@@ -59,7 +58,7 @@ export class PaymongoService implements OnApplicationBootstrap {
    * @param {string} action Toggle options 'enable' or 'disable'
    */
   async toggleWebhook(id: string, action: 'enable' | 'disable') {
-    const result = await paymongo.webhooks.toggle(id, action);
+    const result = await this.paymongo.webhooks.toggle(id, action);
     return result;
   }
 
@@ -71,7 +70,7 @@ export class PaymongoService implements OnApplicationBootstrap {
    * @param {string[]} data.attributes.payment_method_allowed The list of payment method types that the PaymentIntent is allowed to use. Possible value is card for now.
    * @param {string} data.attributes.currency Three-letter ISO currency code, in uppercase. PHP is the only supported currency as of the moment.
    */
-  async createPaymentIntent(amount: number, paymentMethod: string = 'card') {
+  async createPaymentIntent(amount: number, paymentMethod = 'card') {
     const result = await this.paymongo.paymentIntents.create({
       data: {
         attributes: {
@@ -89,7 +88,7 @@ export class PaymongoService implements OnApplicationBootstrap {
    * @param {string} id PaymentIntent id
    */
   async getPaymentIntent(id: string) {
-    const result = await paymongo.paymentIntents.retrieve(id);
+    const result = await this.paymongo.paymentIntents.retrieve(id);
     return result;
   }
 
@@ -109,7 +108,7 @@ export class PaymongoService implements OnApplicationBootstrap {
     expYear: number,
     cvc: string,
   ) {
-    const result = await paymongo.paymentMethods.create({
+    const result = await this.paymongo.paymentMethods.create({
       data: {
         attributes: {
           type: 'card',
@@ -130,7 +129,7 @@ export class PaymongoService implements OnApplicationBootstrap {
    * @param {string} id The PaymentMethod id
    */
   async getPaymentMethod(id: string) {
-    const result = await paymongo.paymentMethods.retrieve(id);
+    const result = await this.paymongo.paymentMethods.retrieve(id);
     return result;
   }
 }

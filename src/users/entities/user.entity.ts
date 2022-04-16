@@ -1,5 +1,14 @@
 import { ObjectType, Field, ID, GraphQLISODateTime } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Country } from 'src/countries/entities/country.entity';
+import { ExternalFundTransfer } from 'src/external-fund-transfers/entities/external-fund-transfer.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from '../enums/role.enum';
 
 @Entity('user')
@@ -21,15 +30,34 @@ export class User {
   password: string;
 
   @Column({ unique: true })
-  phone_number: string;
+  phoneNumber: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.USER,
+  })
   @Field(() => Role, { defaultValue: Role.USER })
-  role: string = Role.USER;
+  role: Role = Role.USER;
 
   @Column('timestamptz')
   @Field(() => GraphQLISODateTime, {
     defaultValue: new Date(Date.now()),
   })
   createdAt: Date = new Date(Date.now());
+
+  @OneToMany(
+    () => ExternalFundTransfer,
+    (externalFundTransfer) => externalFundTransfer.user,
+  )
+  externalFundTransfers: ExternalFundTransfer[];
+
+  @OneToOne(() => Country)
+  @JoinColumn()
+  @Field(() => Country)
+  country: Country;
+
+  // @OneToMany(() => Transaction, )transaction => transaction.user
+  // @Field(() => [Transaction])
+  // transactions: Transaction[];
 }

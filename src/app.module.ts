@@ -11,7 +11,18 @@ import { AuthModule } from './auth/auth.module';
 import { GQLContext } from './graphql/types';
 import { CountriesModule } from './countries/countries.module';
 import { Country } from './countries/entities/country.entity';
-import { Currency } from './countries/entities/currency.entity';
+import { Currency } from './currencies/entities/currency.entity';
+import { CurrenciesModule } from './currencies/currencies.module';
+import { PaymentService } from './payment-services/entities/payment-service.entity';
+import { PaymentServicesModule } from './payment-services/payment-services.module';
+import { FundTransfersModule } from './fund-transfers/fund-transfers.module';
+import { InternalFundTransfer } from './internal-fund-transfers/entities/internal-fund-transfer.entity';
+import { InternalFundTransfersModule } from './internal-fund-transfers/internal-fund-transfers.module';
+import { FundTransfer } from './fund-transfers/entities/fund-transfer.entity';
+import { ExternalFundTransfersModule } from './external-fund-transfers/external-fund-transfers.module';
+import { ExternalFundTransfer } from './external-fund-transfers/entities/external-fund-transfer.entity';
+import { PaymongoController } from './paymongo/paymongo.controller';
+import { PaymongoModule } from './paymongo/paymongo.module';
 
 @Module({
   imports: [
@@ -30,13 +41,27 @@ import { Currency } from './countries/entities/currency.entity';
       password: 'password',
       database: 'db',
       synchronize: true,
-      entities: [User, Country, Currency],
+      entities: [
+        User,
+        Country,
+        Currency,
+        PaymentService,
+        FundTransfer,
+        InternalFundTransfer,
+        ExternalFundTransfer,
+      ],
     }),
     UsersModule,
     AuthModule,
+    CurrenciesModule,
     CountriesModule,
+    PaymentServicesModule,
+    FundTransfersModule,
+    InternalFundTransfersModule,
+    ExternalFundTransfersModule,
+    PaymongoModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, PaymongoController],
   providers: [AppService],
 })
 export class AppModule {}
