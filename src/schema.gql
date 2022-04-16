@@ -130,6 +130,7 @@ type Query {
   internalFundTransfers: [InternalFundTransfer!]!
   paymentService(id: String!): PaymentService!
   paymentServices: [PaymentService!]!
+  totalBalance: String!
   user(id: String!): User!
   users: [User!]!
 }

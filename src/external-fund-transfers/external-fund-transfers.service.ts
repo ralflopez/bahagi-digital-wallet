@@ -69,6 +69,17 @@ export class ExternalFundTransfersService {
     });
   }
 
+  async getTotalAmount(userId: string) {
+    const userExternalFundTransfer = await this.externalFundTransferRepository
+      .createQueryBuilder('external_fund_transfer')
+      .leftJoin('external_fund_transfer.details', 'details')
+      .select('SUM(details.amount)', 'total')
+      .groupBy('external_fund_transfer.userId')
+      .where('external_fund_transfer.userId = :userId', { userId: userId })
+      .getRawOne();
+    return userExternalFundTransfer;
+  }
+
   findOne(id: string) {
     return this.externalFundTransferRepository.findOne({
       where: {
