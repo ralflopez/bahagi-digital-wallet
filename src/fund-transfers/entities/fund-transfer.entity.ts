@@ -4,7 +4,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { FundTransferStatus } from '../enums/status.enum';
@@ -25,10 +25,13 @@ export class FundTransfer {
   @Field(() => Float)
   fee: number;
 
-  @OneToOne(() => Currency)
-  @JoinColumn()
+  @ManyToOne(() => Currency, (currency) => currency.fundTransfers)
+  @JoinColumn({ name: 'currencyId' })
   @Field(() => Currency)
   currency: Currency;
+
+  @Column({ unique: false })
+  currencyId: string;
 
   @Column({
     type: 'enum',
