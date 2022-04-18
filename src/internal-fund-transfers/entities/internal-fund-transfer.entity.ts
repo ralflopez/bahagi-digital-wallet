@@ -1,7 +1,13 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { FundTransfer } from 'src/fund-transfers/entities/fund-transfer.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -10,12 +16,12 @@ export class InternalFundTransfer {
   @Field(() => ID)
   readonly id: string;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User, (user) => user.sentFund)
   @JoinColumn()
   @Field(() => User)
   sender: User;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User, (user) => user.receivedFund)
   @JoinColumn()
   @Field(() => User)
   receiver: User;
