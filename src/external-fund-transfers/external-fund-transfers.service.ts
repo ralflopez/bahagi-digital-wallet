@@ -31,6 +31,7 @@ export class ExternalFundTransfersService {
       status: FundTransferStatus.SUCCESS,
       type: createExternalFundTransferInput.type,
     });
+    console.log(fundTransfer);
 
     const user = await this.userService.findOne(
       createExternalFundTransferInput.userId,
@@ -70,13 +71,15 @@ export class ExternalFundTransfersService {
   }
 
   async getTotalAmount(userId: string) {
+    console.log(userId);
     const userExternalFundTransfer = await this.externalFundTransferRepository
       .createQueryBuilder('external_fund_transfer')
       .leftJoin('external_fund_transfer.details', 'details')
       .select('SUM(details.amount)', 'total')
-      .groupBy('external_fund_transfer.userId')
+      // .groupBy('external_fund_transfer.userId')
       .where('external_fund_transfer.userId = :userId', { userId: userId })
       .getRawOne();
+    console.log(userExternalFundTransfer);
     return userExternalFundTransfer;
   }
 

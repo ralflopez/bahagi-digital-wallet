@@ -16,7 +16,15 @@ export class BalancesService {
       userId,
     );
     console.log(totalExternal);
-    return JSON.stringify(totalExternal) || 0;
+
+    const totalInternal = await this.internalFundTransferService.getTotalAmount(
+      userId,
+    );
+    console.log(totalInternal);
+
+    const total = totalInternal.total + totalExternal.total;
+
+    return JSON.stringify(total) || 0;
   }
 
   create(createBalanceInput: CreateBalanceInput) {

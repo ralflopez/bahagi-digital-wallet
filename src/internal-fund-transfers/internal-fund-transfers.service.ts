@@ -38,14 +38,18 @@ export class InternalFundTransfersService {
     if (!receiver) throw new Error("User doesn't exist");
 
     const sender = await this.userService.findOne(userId);
-    if (!receiver) throw new AuthenticationError('You are not logged in');
+    if (!sender) throw new AuthenticationError('You are not logged in');
+
+    const internalFundTransferId = uuid.v4().toLowerCase();
+    console.log('I_FT_ID: ' + internalFundTransferId);
 
     const internalFundTransfer = this.internalFundTransfer.create({
       details: fundTransfer,
       receiver,
       sender,
-      id: uuid.v4(),
+      id: internalFundTransferId,
     });
+    console.log('weee');
 
     const savedInternalFundTransfer = await this.internalFundTransfer.save(
       internalFundTransfer,
@@ -63,15 +67,28 @@ export class InternalFundTransfersService {
     });
   }
 
-  async getTotalAmount(userId: string) {
+  async getTotalAmount(userId: string): Promise<{ total: number }> {
+    // internal
     const sentAmount = await this.internalFundTransfer
       .createQueryBuilder('internal_fund_transfer')
       .leftJoin('internal_fund_transfer.details', 'details')
       .leftJoin('internal_fund_transfer.sender', 'sender')
       .select('SUM(details.amount)', 'total')
-      // .groupBy('internal_fund_transfer.receiverId')
       .where('internal_fund_transfer.senderId = :userId', { userId })
-      .getRawMany();
-    return sentAmount;
+      .getRawOne();
+    console.log('sent: ' + sentAmount.total);
+
+    const receivedAmount = await this.internalFundTransfer
+      .createQueryBuilder('internal_fund_transfer')
+      .leftJoin('internal_fund_transfer.details', 'details')
+      .leftJoin('internal_fund_transfer.receiver', 'receiver')
+      .select('SUM(details.amount)', 'total')
+      .where('internal_fund_transfer.receiverId = :userId', { userId })
+      .getRawOne();
+    console.log('received: ' + receivedAmount.total);
+
+    return {
+      total: -(sentAmount.total || 0) + (receivedAmount.total || 0),
+    };
   }
 }

@@ -19,7 +19,7 @@ export class ExternalFundTransfer {
   @Field(() => ID)
   id: string;
 
-  @OneToOne(() => FundTransfer, { onDelete: 'CASCADE' })
+  @OneToOne(() => FundTransfer, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()
   @Field(() => FundTransfer)
   details: FundTransfer;

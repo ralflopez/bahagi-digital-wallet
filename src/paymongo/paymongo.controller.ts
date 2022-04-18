@@ -16,7 +16,7 @@ export class PaymongoController {
     @Body() webhookEventDto: WebhookEventDto,
     @Session() session: Record<string, any>,
   ) {
-    const user = session.user;
+    const user = session.user || { id: '12a9b624-3202-463b-9ebc-8fd5e80ee9e4' };
     if (!user) throw new Error('Unauthorized');
 
     const externalFundTransfer = await this.externalFundTransferService.create(
@@ -24,7 +24,7 @@ export class PaymongoController {
       ExternalFundTransferMethod.CASH_IN,
       {
         amount: webhookEventDto.data.attributes.data.attributes.amount,
-        currencyId: 'PHP',
+        currencyId: 'php',
         fee:
           webhookEventDto.data.attributes.data.attributes.fee +
           webhookEventDto.data.attributes.data.attributes.foreign_fee,

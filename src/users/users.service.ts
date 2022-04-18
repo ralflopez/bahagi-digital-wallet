@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class UsersService {
@@ -19,9 +20,11 @@ export class UsersService {
     );
     if (!country) throw new Error('Invalid country id');
 
+    const userUUID = uuid.v4();
+
     const user = this.usersRepository.create({
       ...createUserInput,
-      country,
+      id: userUUID,
     });
 
     const savedUser = await this.usersRepository.save(user);

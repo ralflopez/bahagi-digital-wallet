@@ -22,6 +22,13 @@ input CreateCurrencyInput {
   symbol: String!
 }
 
+input CreateInternalFundTransfer {
+  amount: Float!
+  currencyId: String!
+  receiverId: String!
+  senderId: String!
+}
+
 input CreatePaymentServiceInput {
   base_fee: Float
   company: String!
@@ -91,6 +98,7 @@ input LogInInput {
 type Mutation {
   createCountry(createCountryInput: CreateCountryInput!): Country!
   createCurrency(createCurrencyInput: CreateCurrencyInput!): Currency!
+  createInternalFundTransfer(createInternalFundTransferInput: CreateInternalFundTransfer!): InternalFundTransfer!
   createPaymentService(createPaymentGatewayInput: CreatePaymentServiceInput!): PaymentService!
   createUser(createUserInput: CreateUserInput!): User!
   logIn(logIninput: LogInInput!): User!

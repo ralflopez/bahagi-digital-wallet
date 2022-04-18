@@ -13,5 +13,6 @@ import { InternalFundTransfer } from './entities/internal-fund-transfer.entity';
     UsersModule,
   ],
   providers: [InternalFundTransfersResolver, InternalFundTransfersService],
+  exports: [InternalFundTransfersService],
 })
 export class InternalFundTransfersModule {}

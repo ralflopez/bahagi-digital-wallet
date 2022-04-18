@@ -9,7 +9,9 @@ describe('InternalFundTransfersService', () => {
       providers: [InternalFundTransfersService],
     }).compile();
 
-    service = module.get<InternalFundTransfersService>(InternalFundTransfersService);
+    service = module.get<InternalFundTransfersService>(
+      InternalFundTransfersService,
+    );
   });
 
   it('should be defined', () => {

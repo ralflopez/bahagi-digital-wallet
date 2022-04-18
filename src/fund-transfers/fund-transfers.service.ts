@@ -20,7 +20,7 @@ export class FundTransfersService {
       createFundTransferInput.currencyId,
     );
     if (!currency) throw new UserInputError('Invalid Currency');
-
+    console.log(currency);
     const fundTransfer = this.fundTransferRepository.create({
       ...createFundTransferInput,
       currency,
