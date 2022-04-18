@@ -5,6 +5,7 @@ import { CurrenciesService } from 'src/currencies/currencies.service';
 import { Repository } from 'typeorm';
 import { CreateFundTransferInput } from './dto/create-fund-transfer.input';
 import { FundTransfer } from './entities/fund-transfer.entity';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class FundTransfersService {
@@ -23,6 +24,7 @@ export class FundTransfersService {
     const fundTransfer = this.fundTransferRepository.create({
       ...createFundTransferInput,
       currency,
+      id: uuid.v4(),
     });
     const savedFundTransfer = await this.fundTransferRepository.save(
       fundTransfer,
