@@ -1,6 +1,7 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import * as Paymongo from 'paymongo';
 import * as dotenv from 'dotenv';
+import { PaymentIntentResult } from './entites/payment-intent';
 
 dotenv.config();
 
@@ -70,18 +71,23 @@ export class PaymongoService implements OnApplicationBootstrap {
    * @param {string[]} data.attributes.payment_method_allowed The list of payment method types that the PaymentIntent is allowed to use. Possible value is card for now.
    * @param {string} data.attributes.currency Three-letter ISO currency code, in uppercase. PHP is the only supported currency as of the moment.
    */
-  async createPaymentIntent(amount: number, paymentMethod = 'card') {
+  async createPaymentIntent(
+    amount: number,
+    paymentMethod = 'card',
+  ): Promise<PaymentIntentResult> {
     const result = await this.paymongo.paymentIntents.create({
       data: {
         attributes: {
-          amount,
+          amount: amount * 100, // convert to centavo
           currency: 'PHP',
           payment_method_allowed: [paymentMethod],
         },
       },
     });
 
-    return result;
+    return {
+      clientKey: result?.data?.attributes?.client_key,
+    };
   }
 
   /**

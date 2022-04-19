@@ -107,6 +107,7 @@ type Mutation {
   createCurrency(createCurrencyInput: CreateCurrencyInput!): Currency!
   createInternalFundTransfer(createInternalFundTransferInput: CreateInternalFundTransfer!): InternalFundTransfer!
   createPaymentService(createPaymentGatewayInput: CreatePaymentServiceInput!): PaymentService!
+  createPaymongoPaymentIntent(paymentIntentInput: PaymentIntentInput!): PaymentIntentResult!
   createUser(createUserInput: CreateUserInput!): User!
   logIn(logIninput: LogInInput!): User!
   removeCountry(id: String!): Int!
@@ -117,6 +118,14 @@ type Mutation {
   sendMoney(sendMoneyInput: SendMoneyInput!): InternalFundTransfer!
   signUp(signUpInput: SignUpInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
+}
+
+input PaymentIntentInput {
+  amount: Float!
+}
+
+type PaymentIntentResult {
+  clientKey: String!
 }
 
 type PaymentService {

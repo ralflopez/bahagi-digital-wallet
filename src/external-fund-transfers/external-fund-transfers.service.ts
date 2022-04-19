@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthenticationError, UserInputError } from 'apollo-server-errors';
-import { randomUUID } from 'crypto';
 import { FundTransferStatus } from 'src/fund-transfers/enums/status.enum';
 import { FundTransferType } from 'src/fund-transfers/enums/type.enum';
 import { FundTransfersService } from 'src/fund-transfers/fund-transfers.service';
