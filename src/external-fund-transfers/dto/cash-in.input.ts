@@ -1,4 +1,4 @@
-import { InputType, Int, Field, Float } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 import { CreateFundTransferInput } from 'src/fund-transfers/dto/create-fund-transfer.input';
 
 @InputType()

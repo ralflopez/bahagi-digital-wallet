@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthenticationError, UserInputError } from 'apollo-server-errors';
+import { randomUUID } from 'crypto';
 import { FundTransferStatus } from 'src/fund-transfers/enums/status.enum';
+import { FundTransferType } from 'src/fund-transfers/enums/type.enum';
 import { FundTransfersService } from 'src/fund-transfers/fund-transfers.service';
 import { PaymentServiceService } from 'src/payment-services/payment-services.service';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CashInInput } from './dto/cash-in.input';
+import { CashOutInput } from './dto/cash-out.input';
 import { ExternalFundTransfer } from './entities/external-fund-transfer.entity';
 import { ExternalFundTransferMethod } from './enums/method.enum';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class ExternalFundTransfersService {
@@ -47,6 +52,40 @@ export class ExternalFundTransfersService {
       method,
       paymentService,
       user,
+    });
+
+    const savedExternalFundTransfer =
+      await this.externalFundTransferRepository.save(externalFundTransfer);
+    return savedExternalFundTransfer;
+  }
+
+  async cashOut(
+    userId: string,
+    { amount, currencyId, paymentServiceId }: CashOutInput,
+  ) {
+    const user = await this.userService.findOne(userId);
+    if (!user) throw new AuthenticationError('You are not logged in');
+
+    const paymentService = await this.paymentServiceService.findOne(
+      paymentServiceId,
+    );
+    if (!paymentService)
+      throw new UserInputError(`Payment Service doesn't exist`);
+
+    const fundTransfer = await this.fundTransferService.create({
+      amount,
+      currencyId,
+      fee: this.paymentServiceService.computeFee(amount, paymentService),
+      status: FundTransferStatus.PROCESSING,
+      type: FundTransferType.EXTERNAL,
+    });
+
+    const externalFundTransfer = this.externalFundTransferRepository.create({
+      details: fundTransfer,
+      user,
+      paymentService,
+      method: ExternalFundTransferMethod.CASH_OUT,
+      id: uuid.v4(),
     });
 
     const savedExternalFundTransfer =

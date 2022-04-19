@@ -10,7 +10,9 @@ describe('ExternalFundTransfersResolver', () => {
       providers: [ExternalFundTransfersResolver, ExternalFundTransfersService],
     }).compile();
 
-    resolver = module.get<ExternalFundTransfersResolver>(ExternalFundTransfersResolver);
+    resolver = module.get<ExternalFundTransfersResolver>(
+      ExternalFundTransfersResolver,
+    );
   });
 
   it('should be defined', () => {

@@ -1,5 +1,4 @@
 import { InputType, Field, Float } from '@nestjs/graphql';
-import { Currency } from 'src/currencies/entities/currency.entity';
 import { FundTransferStatus } from '../enums/status.enum';
 import { FundTransferType } from '../enums/type.enum';
 
