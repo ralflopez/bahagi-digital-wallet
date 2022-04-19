@@ -93,7 +93,7 @@ export class ExternalFundTransfersService {
     return savedExternalFundTransfer;
   }
 
-  async setCashOutStatus(id: string, status: FundTransferStatus) {
+  async updateCashOutStatus(id: string, status: FundTransferStatus) {
     const externalFundTransfer = await this.findOne(id);
     externalFundTransfer.details.status = status;
     return externalFundTransfer;
