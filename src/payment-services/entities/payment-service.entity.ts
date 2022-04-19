@@ -35,7 +35,7 @@ export class PaymentService {
 
   @Column('float', { default: 0 })
   @Field(() => Float, { defaultValue: 0 })
-  base_fee: number = 0;
+  base_fee = 0;
 
   @OneToMany(
     () => ExternalFundTransfer,
