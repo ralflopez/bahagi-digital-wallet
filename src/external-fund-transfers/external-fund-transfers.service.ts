@@ -93,6 +93,12 @@ export class ExternalFundTransfersService {
     return savedExternalFundTransfer;
   }
 
+  async setCashOutStatus(id: string, status: FundTransferStatus) {
+    const externalFundTransfer = await this.findOne(id);
+    externalFundTransfer.details.status = status;
+    return externalFundTransfer;
+  }
+
   findAll() {
     return this.externalFundTransferRepository.find({
       relations: {
@@ -110,7 +116,6 @@ export class ExternalFundTransfersService {
   }
 
   async getTotalAmount(userId: string) {
-    console.log(userId);
     const userExternalFundTransfer = await this.externalFundTransferRepository
       .createQueryBuilder('external_fund_transfer')
       .leftJoin('external_fund_transfer.details', 'details')
@@ -118,7 +123,6 @@ export class ExternalFundTransfersService {
       // .groupBy('external_fund_transfer.userId')
       .where('external_fund_transfer.userId = :userId', { userId: userId })
       .getRawOne();
-    console.log(userExternalFundTransfer);
     return userExternalFundTransfer;
   }
 
