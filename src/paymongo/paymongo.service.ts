@@ -138,4 +138,26 @@ export class PaymongoService implements OnApplicationBootstrap {
     const result = await this.paymongo.paymentMethods.retrieve(id);
     return result;
   }
+
+  /**
+   * These are the required properties
+   * @param {string} id PaymentIntent id.
+   * @param {Object} data The payload.
+   * @param {Object} data.attributes Payload attributes.
+   * @param {string} data.attributes.payment_method Id of PaymentMethod to attach to the PaymentIntent.
+   */
+  async attachPaymentIntent(
+    id: string,
+    paymentMethodId = 'pm_PvmSWoVu2NKfZrD6UNmNdcNR',
+  ) {
+    const result = await this.paymongo.paymentIntents.attach(id, {
+      data: {
+        attributes: {
+          payment_method: paymentMethodId,
+        },
+      },
+    });
+
+    return result;
+  }
 }

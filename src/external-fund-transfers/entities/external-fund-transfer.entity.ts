@@ -17,7 +17,7 @@ import { ExternalFundTransferMethod } from '../enums/method.enum';
 export class ExternalFundTransfer {
   @PrimaryColumn()
   @Field(() => ID)
-  id: string;
+  id: string; // payment intent id from paymongoD if applicable
 
   @OneToOne(() => FundTransfer, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn()

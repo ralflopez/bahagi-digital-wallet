@@ -2,6 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CashInInput {
+  amount: Float!
+  currencyId: String!
+  paymentIntentId: String!
+  paymentServiceId: String!
+}
+
 input CashOutInput {
   amount: Float!
   currencyId: String!
@@ -102,6 +109,7 @@ input LogInInput {
 }
 
 type Mutation {
+  cashIn(cashInInput: CashInInput!): ExternalFundTransfer!
   cashOut(cashOutInput: CashOutInput!): ExternalFundTransfer!
   createCountry(createCountryInput: CreateCountryInput!): Country!
   createCurrency(createCurrencyInput: CreateCurrencyInput!): Currency!

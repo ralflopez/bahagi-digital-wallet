@@ -1,4 +1,4 @@
-interface PaymongoWebhookEventData {
+export interface PaymongoWebhookEventData {
   id: string;
   type: string;
   attributes: {

@@ -23,32 +23,31 @@ export class ExternalFundTransfersService {
     private readonly paymentServiceService: PaymentServiceService,
   ) {}
 
-  async create(
-    id: string,
-    method: ExternalFundTransferMethod,
-    createExternalFundTransferInput: CashInInput,
+  async cashIn(
+    userId: string,
+    { amount, currencyId, paymentServiceId, paymentIntentId }: CashInInput,
   ) {
-    const fundTransfer = await this.fundTransferService.create({
-      amount: createExternalFundTransferInput.amount,
-      currencyId: createExternalFundTransferInput.currencyId,
-      fee: createExternalFundTransferInput.fee,
-      status: FundTransferStatus.SUCCESS,
-      type: createExternalFundTransferInput.type,
-    });
-    console.log(fundTransfer);
-
-    const user = await this.userService.findOne(
-      createExternalFundTransferInput.userId,
-    );
+    const user = await this.userService.findOne(userId);
+    if (!user) throw new AuthenticationError('You are not logged in');
 
     const paymentService = await this.paymentServiceService.findOne(
-      createExternalFundTransferInput.paymentServiceId,
+      paymentServiceId,
     );
+    if (!paymentService)
+      throw new UserInputError('Payment service doesnt exist');
+
+    const fundTransfer = await this.fundTransferService.create({
+      amount: amount,
+      currencyId: currencyId,
+      fee: this.paymentServiceService.computeFee(amount, paymentService),
+      status: FundTransferStatus.PROCESSING,
+      type: FundTransferType.EXTERNAL,
+    });
 
     const externalFundTransfer = this.externalFundTransferRepository.create({
       details: fundTransfer,
-      id,
-      method,
+      id: paymentIntentId,
+      method: ExternalFundTransferMethod.CASH_IN,
       paymentService,
       user,
     });
@@ -92,11 +91,36 @@ export class ExternalFundTransfersService {
     return savedExternalFundTransfer;
   }
 
-  async updateCashOutStatus(id: string, status: FundTransferStatus) {
-    const externalFundTransfer = await this.findOne(id);
-    externalFundTransfer.details.status = status;
-    return externalFundTransfer;
-  }
+  // async updateCashInStatus(id: string, status: FundTransferStatus) {
+  //   const externalFundTransfer = await this.findOne(id);
+
+  //   if (externalFundTransfer.method !== ExternalFundTransferMethod.CASH_IN)
+  //     throw new UserInputError(
+  //       'Wrong method use update cash out method instead',
+  //     );
+
+  //   const details = externalFundTransfer.details;
+  //   details.status = status;
+
+  //   await this.fundTransferService.updateOne(details);
+
+  //   return externalFundTransfer;
+  // }
+
+  // async updateCashOutStatus(id: string, status: FundTransferStatus) {
+  //   const externalFundTransfer = await this.findOne(id);
+  //   if (externalFundTransfer.method !== ExternalFundTransferMethod.CASH_OUT)
+  //     throw new UserInputError(
+  //       'Wrong method use update cash in method instead',
+  //     );
+
+  //   const details = externalFundTransfer.details;
+  //   details.status = status;
+
+  //   await this.fundTransferService.updateOne(details);
+
+  //   return externalFundTransfer;
+  // }
 
   findAll() {
     return this.externalFundTransferRepository.find({

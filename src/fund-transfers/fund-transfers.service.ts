@@ -36,8 +36,21 @@ export class FundTransfersService {
     return `This action returns all fundTransfers`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} fundTransfer`;
+  findOne(id: string) {
+    return this.fundTransferRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        currency: true,
+      },
+    });
+  }
+
+  updateOne(fundTransfer: FundTransfer) {
+    return this.fundTransferRepository.save({
+      ...fundTransfer,
+    });
   }
 
   remove(id: number) {

@@ -1,11 +1,16 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { CreateFundTransferInput } from 'src/fund-transfers/dto/create-fund-transfer.input';
+import { InputType, Field, Float } from '@nestjs/graphql';
 
 @InputType()
-export class CashInInput extends CreateFundTransferInput {
-  @Field()
-  userId: string;
-
+export class CashInInput {
   @Field()
   paymentServiceId: string;
+
+  @Field(() => Float)
+  amount: number;
+
+  @Field()
+  currencyId: string;
+
+  @Field()
+  paymentIntentId: string;
 }
