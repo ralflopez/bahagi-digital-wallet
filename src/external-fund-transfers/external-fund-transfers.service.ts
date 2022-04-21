@@ -91,36 +91,36 @@ export class ExternalFundTransfersService {
     return savedExternalFundTransfer;
   }
 
-  // async updateCashInStatus(id: string, status: FundTransferStatus) {
-  //   const externalFundTransfer = await this.findOne(id);
+  async updateCashInStatus(id: string, status: FundTransferStatus) {
+    const externalFundTransfer = await this.findOne(id);
 
-  //   if (externalFundTransfer.method !== ExternalFundTransferMethod.CASH_IN)
-  //     throw new UserInputError(
-  //       'Wrong method use update cash out method instead',
-  //     );
+    if (externalFundTransfer.method !== ExternalFundTransferMethod.CASH_IN)
+      throw new UserInputError(
+        'Wrong method use update cash out method instead',
+      );
 
-  //   const details = externalFundTransfer.details;
-  //   details.status = status;
+    const details = externalFundTransfer.details;
+    details.status = status;
 
-  //   await this.fundTransferService.updateOne(details);
+    await this.fundTransferService.updateOne(details);
 
-  //   return externalFundTransfer;
-  // }
+    return externalFundTransfer;
+  }
 
-  // async updateCashOutStatus(id: string, status: FundTransferStatus) {
-  //   const externalFundTransfer = await this.findOne(id);
-  //   if (externalFundTransfer.method !== ExternalFundTransferMethod.CASH_OUT)
-  //     throw new UserInputError(
-  //       'Wrong method use update cash in method instead',
-  //     );
+  async updateCashOutStatus(id: string, status: FundTransferStatus) {
+    const externalFundTransfer = await this.findOne(id);
+    if (externalFundTransfer.method !== ExternalFundTransferMethod.CASH_OUT)
+      throw new UserInputError(
+        'Wrong method use update cash in method instead',
+      );
 
-  //   const details = externalFundTransfer.details;
-  //   details.status = status;
+    const details = externalFundTransfer.details;
+    details.status = status;
 
-  //   await this.fundTransferService.updateOne(details);
+    await this.fundTransferService.updateOne(details);
 
-  //   return externalFundTransfer;
-  // }
+    return externalFundTransfer;
+  }
 
   findAll() {
     return this.externalFundTransferRepository.find({

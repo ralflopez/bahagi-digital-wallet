@@ -125,6 +125,8 @@ type Mutation {
   removeUser(id: String!): String!
   sendMoney(sendMoneyInput: SendMoneyInput!): InternalFundTransfer!
   signUp(signUpInput: SignUpInput!): User!
+  updateCashInStatus(updateExternalFundTransferStatusInput: UpdateExternalFundTransferStatusInput!): ExternalFundTransfer!
+  updateCashOutStatus(updateExternalFundTransferStatusInput: UpdateExternalFundTransferStatusInput!): ExternalFundTransfer!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
@@ -184,6 +186,11 @@ input SignUpInput {
   name: String!
   password: String!
   phoneNumber: String!
+}
+
+input UpdateExternalFundTransferStatusInput {
+  id: String!
+  status: FundTransferStatus!
 }
 
 input UpdateUserInput {

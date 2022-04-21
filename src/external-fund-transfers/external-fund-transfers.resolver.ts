@@ -6,7 +6,7 @@ import {
   IUserSession,
   UserSession,
 } from 'src/auth/decorators/user-session.decorator';
-// import { UpdateExternalFundTransferStatusInput } from './dto/update-cash-out-status.input';
+import { UpdateExternalFundTransferStatusInput } from './dto/update-cash-out-status.input';
 import { CashInInput } from './dto/cash-in.input';
 
 @Resolver(() => ExternalFundTransfer)
@@ -47,19 +47,21 @@ export class ExternalFundTransfersResolver {
     );
   }
 
-  // updateCashInStatus(
-  //   @Args('updateExternalFundTransferStatusInput')
-  //   { id, status }: UpdateExternalFundTransferStatusInput,
-  // ) {
-  //   return this.externalFundTransfersService.updateCashInStatus(id, status);
-  // }
+  @Mutation(() => ExternalFundTransfer, { name: 'updateCashInStatus' })
+  updateCashInStatus(
+    @Args('updateExternalFundTransferStatusInput')
+    { id, status }: UpdateExternalFundTransferStatusInput,
+  ) {
+    return this.externalFundTransfersService.updateCashInStatus(id, status);
+  }
 
-  // updateCashOutStatus(
-  //   @Args('updateExternalFundTransferStatusInput')
-  //   { id, status }: UpdateExternalFundTransferStatusInput,
-  // ) {
-  //   return this.externalFundTransfersService.updateCashOutStatus(id, status);
-  // }
+  @Mutation(() => ExternalFundTransfer, { name: 'updateCashOutStatus' })
+  updateCashOutStatus(
+    @Args('updateExternalFundTransferStatusInput')
+    { id, status }: UpdateExternalFundTransferStatusInput,
+  ) {
+    return this.externalFundTransfersService.updateCashOutStatus(id, status);
+  }
 
   @Query(() => [ExternalFundTransfer], { name: 'externalFundTransfers' })
   findAll() {
