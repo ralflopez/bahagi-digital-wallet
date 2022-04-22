@@ -7,6 +7,7 @@ import { PaymentServiceType } from '../enums/type.enum';
 @Entity('payment_service')
 @ObjectType()
 export class PaymentService {
+  // TOOD: add country column
   @PrimaryColumn()
   @Field(() => ID)
   id: string;

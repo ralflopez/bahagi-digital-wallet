@@ -23,7 +23,7 @@ export class Country {
   @Field()
   name: string;
 
-  @ManyToOne(() => Currency, { onDelete: 'NO ACTION' })
+  @ManyToOne(() => Currency, { onDelete: 'SET NULL', cascade: true })
   @JoinColumn()
   @Field(() => Currency)
   currency: Currency;
@@ -32,6 +32,9 @@ export class Country {
   @Field()
   mobileCode: string;
 
-  @OneToMany(() => User, (user) => user.country, { onDelete: 'SET NULL' })
+  @OneToMany(() => User, (user) => user.country, {
+    onDelete: 'SET NULL',
+    cascade: true,
+  })
   users: User[];
 }

@@ -25,13 +25,12 @@ export class FundTransfer {
   @Field(() => Float)
   fee: number;
 
-  @ManyToOne(() => Currency, (currency) => currency.fundTransfers)
-  @JoinColumn({ name: 'currencyId' })
+  @ManyToOne(() => Currency, (currency) => currency.fundTransfers, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn()
   @Field(() => Currency)
   currency: Currency;
-
-  @Column({ unique: false })
-  currencyId: string;
 
   @Column({
     type: 'enum',

@@ -18,7 +18,9 @@ export class Currency {
   @Field()
   symbol: string;
 
-  @OneToMany(() => FundTransfer, (fundTransfer) => fundTransfer.currency)
+  @OneToMany(() => FundTransfer, (fundTransfer) => fundTransfer.currency, {
+    onDelete: 'NO ACTION',
+  })
   fundTransfers: FundTransfer[];
 
   @OneToMany(() => Country, (country) => country.currency, {
