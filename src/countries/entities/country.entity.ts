@@ -4,6 +4,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryColumn,
@@ -22,18 +23,15 @@ export class Country {
   @Field()
   name: string;
 
-  @OneToOne(() => Currency)
-  @JoinColumn({ name: 'currencyId' })
+  @ManyToOne(() => Currency, { onDelete: 'NO ACTION' })
+  @JoinColumn()
   @Field(() => Currency)
   currency: Currency;
-
-  @Column()
-  currencyId: string;
 
   @Column()
   @Field()
   mobileCode: string;
 
-  @OneToMany(() => User, (user) => user.country)
+  @OneToMany(() => User, (user) => user.country, { onDelete: 'SET NULL' })
   users: User[];
 }

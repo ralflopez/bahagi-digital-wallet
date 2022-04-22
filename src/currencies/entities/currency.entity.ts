@@ -1,4 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Country } from 'src/countries/entities/country.entity';
 import { FundTransfer } from 'src/fund-transfers/entities/fund-transfer.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
@@ -19,4 +20,9 @@ export class Currency {
 
   @OneToMany(() => FundTransfer, (fundTransfer) => fundTransfer.currency)
   fundTransfers: FundTransfer[];
+
+  @OneToMany(() => Country, (country) => country.currency, {
+    onDelete: 'SET NULL',
+  })
+  countries: Country[];
 }
