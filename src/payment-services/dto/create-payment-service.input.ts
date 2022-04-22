@@ -1,4 +1,5 @@
 import { InputType, Field, Float } from '@nestjs/graphql';
+import { PaymentServiceMethod } from '../enums/method.enum';
 import { PaymentServiceType } from '../enums/type.enum';
 
 @InputType()
@@ -11,6 +12,9 @@ export class CreatePaymentServiceInput {
 
   @Field(() => PaymentServiceType)
   type: PaymentServiceType;
+
+  @Field(() => PaymentServiceMethod)
+  method: PaymentServiceMethod;
 
   @Field(() => Float)
   percent_fee: number;

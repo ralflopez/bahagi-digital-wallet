@@ -45,6 +45,7 @@ input CreateInternalFundTransfer {
 input CreatePaymentServiceInput {
   base_fee: Float
   company: String!
+  method: PaymentServiceMethod!
   minimum_fee: Float!
   name: String!
   percent_fee: Float!
@@ -142,10 +143,17 @@ type PaymentService {
   base_fee: Float!
   company: String!
   id: ID!
+  method: PaymentServiceMethod!
   minimum_fee: Float!
   name: String!
   percent_fee: Float!
   type: PaymentServiceType!
+}
+
+enum PaymentServiceMethod {
+  ANY
+  CASH_IN
+  CASH_OUT
 }
 
 enum PaymentServiceType {

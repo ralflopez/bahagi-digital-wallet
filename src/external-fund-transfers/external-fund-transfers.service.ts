@@ -145,6 +145,9 @@ export class ExternalFundTransfersService {
       .select('SUM(details.amount)', 'total')
       // .groupBy('external_fund_transfer.userId')
       .where('external_fund_transfer.userId = :userId', { userId: userId })
+      .andWhere('details.status = :status', {
+        status: FundTransferStatus.SUCCESS,
+      })
       .getRawOne();
     return userExternalFundTransfer;
   }
