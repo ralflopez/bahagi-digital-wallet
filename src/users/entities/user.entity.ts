@@ -54,7 +54,7 @@ export class User {
   )
   externalFundTransfers: ExternalFundTransfer[];
 
-  @OneToOne(() => Country)
+  @ManyToOne(() => Country)
   @JoinColumn()
   @Field(() => Country)
   country: Country;

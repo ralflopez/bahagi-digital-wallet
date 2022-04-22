@@ -1,5 +1,13 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { Currency } from '../../currencies/entities/currency.entity';
 
 @Entity('country')
@@ -25,4 +33,7 @@ export class Country {
   @Column()
   @Field()
   mobileCode: string;
+
+  @OneToMany(() => User, (user) => user.country)
+  users: User[];
 }
