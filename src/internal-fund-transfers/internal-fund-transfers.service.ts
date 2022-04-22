@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthenticationError, UserInputError } from 'apollo-server-errors';
+import { AuthenticationError } from 'apollo-server-errors';
 import { FundTransferStatus } from 'src/fund-transfers/enums/status.enum';
 import { FundTransferType } from 'src/fund-transfers/enums/type.enum';
 import { FundTransfersService } from 'src/fund-transfers/fund-transfers.service';
@@ -26,11 +26,6 @@ export class InternalFundTransfersService {
     const sender = await this.userService.findOne(userId);
     if (!sender) throw new AuthenticationError('You are not logged in');
 
-    if (sender.country.currency.id !== sendMoneyInput.currencyId)
-      throw new UserInputError(
-        'You cannot use a different cuurency at the moment',
-      );
-
     const receiver = await this.userService.findOne(sendMoneyInput.receiverId);
     if (!receiver) throw new Error("User doesn't exist");
 
@@ -52,6 +47,7 @@ export class InternalFundTransfersService {
     const savedInternalFundTransfer = await this.internalFundTransfer.save(
       internalFundTransfer,
     );
+
     return savedInternalFundTransfer;
   }
 
@@ -60,7 +56,9 @@ export class InternalFundTransfersService {
       relations: {
         sender: true,
         receiver: true,
-        details: true,
+        details: {
+          currency: true,
+        },
       },
     });
   }
@@ -74,7 +72,6 @@ export class InternalFundTransfersService {
       .select('SUM(details.amount)', 'total')
       .where('internal_fund_transfer.senderId = :userId', { userId })
       .getRawOne();
-    console.log('sent: ' + sentAmount.total);
 
     const receivedAmount = await this.internalFundTransfer
       .createQueryBuilder('internal_fund_transfer')
@@ -83,7 +80,6 @@ export class InternalFundTransfersService {
       .select('SUM(details.amount)', 'total')
       .where('internal_fund_transfer.receiverId = :userId', { userId })
       .getRawOne();
-    console.log('received: ' + receivedAmount.total);
 
     return {
       total: -(sentAmount.total || 0) + (receivedAmount.total || 0),

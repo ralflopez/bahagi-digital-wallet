@@ -33,6 +33,7 @@ export class InternalFundTransfersResolver {
   ) {
     if (sendMoneyInput.receiverId == userSession.id)
       throw new UserInputError('You cannot send money to yourself');
+
     return this.internalFundTransfersService.create(
       userSession.id,
       sendMoneyInput,

@@ -80,9 +80,9 @@ export class ExternalFundTransfersService {
       throw new UserInputError('You cannot cash in with this service');
 
     const fundTransfer = await this.fundTransferService.create({
-      amount,
+      amount: -amount,
       currencyId,
-      fee: this.paymentServiceService.computeFee(amount, paymentService),
+      fee: -this.paymentServiceService.computeFee(amount, paymentService),
       status: FundTransferStatus.PROCESSING,
       type: FundTransferType.EXTERNAL,
     });
@@ -151,8 +151,7 @@ export class ExternalFundTransfersService {
     const userExternalFundTransfer = await this.externalFundTransferRepository
       .createQueryBuilder('external_fund_transfer')
       .leftJoin('external_fund_transfer.details', 'details')
-      .select('SUM(details.amount)', 'total')
-      // .groupBy('external_fund_transfer.userId')
+      .select('SUM(details.amount + details.fee)', 'total')
       .where('external_fund_transfer.userId = :userId', { userId: userId })
       .andWhere('details.status = :status', {
         status: FundTransferStatus.SUCCESS,
