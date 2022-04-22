@@ -7,6 +7,7 @@ import {
   UserSession,
 } from 'src/auth/decorators/user-session.decorator';
 import { CreateInternalFundTransfer } from './dto/create-internal-fund-transfer.input';
+import { UserInputError } from 'apollo-server-errors';
 
 @Resolver(() => InternalFundTransfer)
 export class InternalFundTransfersResolver {
@@ -30,6 +31,8 @@ export class InternalFundTransfersResolver {
     @Args('sendMoneyInput') sendMoneyInput: SendMoneyInput,
     @UserSession() userSession: IUserSession,
   ) {
+    if (sendMoneyInput.receiverId == userSession.id)
+      throw new UserInputError('You cannot send money to yourself');
     return this.internalFundTransfersService.create(
       userSession.id,
       sendMoneyInput,

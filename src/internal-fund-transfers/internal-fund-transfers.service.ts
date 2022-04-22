@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthenticationError } from 'apollo-server-errors';
+import { AuthenticationError, UserInputError } from 'apollo-server-errors';
 import { FundTransferStatus } from 'src/fund-transfers/enums/status.enum';
 import { FundTransferType } from 'src/fund-transfers/enums/type.enum';
 import { FundTransfersService } from 'src/fund-transfers/fund-transfers.service';
@@ -23,8 +23,16 @@ export class InternalFundTransfersService {
     userId: string,
     sendMoneyInput: SendMoneyInput,
   ): Promise<InternalFundTransfer> {
-    // TODO: should be the same currency
-    // TODO: should receiver not self
+    const sender = await this.userService.findOne(userId);
+    if (!sender) throw new AuthenticationError('You are not logged in');
+
+    if (sender.country.currency.id !== sendMoneyInput.currencyId)
+      throw new UserInputError(
+        'You cannot use a different cuurency at the moment',
+      );
+
+    const receiver = await this.userService.findOne(sendMoneyInput.receiverId);
+    if (!receiver) throw new Error("User doesn't exist");
 
     const fundTransfer = await this.fundTransferService.create({
       amount: sendMoneyInput.amount,
@@ -34,22 +42,12 @@ export class InternalFundTransfersService {
       currencyId: sendMoneyInput.currencyId,
     });
 
-    const receiver = await this.userService.findOne(sendMoneyInput.receiverId);
-    if (!receiver) throw new Error("User doesn't exist");
-
-    const sender = await this.userService.findOne(userId);
-    if (!sender) throw new AuthenticationError('You are not logged in');
-
-    const internalFundTransferId = uuid.v4().toLowerCase();
-    console.log('I_FT_ID: ' + internalFundTransferId);
-
     const internalFundTransfer = this.internalFundTransfer.create({
       details: fundTransfer,
       receiver,
       sender,
-      id: internalFundTransferId,
+      id: uuid.v4(),
     });
-    console.log('weee');
 
     const savedInternalFundTransfer = await this.internalFundTransfer.save(
       internalFundTransfer,

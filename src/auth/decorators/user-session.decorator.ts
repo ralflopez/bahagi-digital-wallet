@@ -7,7 +7,7 @@ export type IUserSession = Pick<User, 'id' | 'name' | 'role'>;
 export const UserSession = createParamDecorator(
   (_data: string, ctx: ExecutionContextHost) => {
     const req = ctx.getArgByIndex(2).req;
-    return req.session.user || { id: '12a9b624-3202-463b-9ebc-8fd5e80ee9e4' };
+    return req.session.user || { id: 'a58f0388-7699-4e76-b78e-8e1fbe85088e' };
     // return { email: 'test@email.com', id: '1', name: 'test name' };
   },
 );
