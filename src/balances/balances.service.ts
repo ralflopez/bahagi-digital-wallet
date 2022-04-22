@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ExternalFundTransfersService } from 'src/external-fund-transfers/external-fund-transfers.service';
 import { InternalFundTransfersService } from 'src/internal-fund-transfers/internal-fund-transfers.service';
 import { CreateBalanceInput } from './dto/create-balance.input';
@@ -8,7 +8,8 @@ import { UpdateBalanceInput } from './dto/update-balance.input';
 export class BalancesService {
   constructor(
     private readonly internalFundTransferService: InternalFundTransfersService,
-    private readonly externalFundTransferService: ExternalFundTransfersService,
+    @Inject(forwardRef(() => ExternalFundTransfersService))
+    private externalFundTransferService: ExternalFundTransfersService,
   ) {}
 
   async getTotalBalance(userId: string) {

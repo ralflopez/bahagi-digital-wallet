@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthenticationError, UserInputError } from 'apollo-server-errors';
 import { FundTransferStatus } from 'src/fund-transfers/enums/status.enum';
@@ -12,6 +12,8 @@ import { CashOutInput } from './dto/cash-out.input';
 import { ExternalFundTransfer } from './entities/external-fund-transfer.entity';
 import { ExternalFundTransferMethod } from './enums/method.enum';
 import * as uuid from 'uuid';
+import { BalancesService } from 'src/balances/balances.service';
+import { PaymentServiceMethod } from 'src/payment-services/enums/method.enum';
 
 @Injectable()
 export class ExternalFundTransfersService {
@@ -21,6 +23,8 @@ export class ExternalFundTransfersService {
     private readonly fundTransferService: FundTransfersService,
     private readonly userService: UsersService,
     private readonly paymentServiceService: PaymentServiceService,
+    @Inject(forwardRef(() => BalancesService))
+    private balanceService: BalancesService,
   ) {}
 
   async cashIn(
@@ -64,11 +68,16 @@ export class ExternalFundTransfersService {
     const user = await this.userService.findOne(userId);
     if (!user) throw new AuthenticationError('You are not logged in');
 
+    const balance = await this.balanceService.getTotalBalance(user.id);
+    if (balance < amount) throw new UserInputError('Insufficient Funds');
+
     const paymentService = await this.paymentServiceService.findOne(
       paymentServiceId,
     );
     if (!paymentService)
       throw new UserInputError(`Payment Service doesn't exist`);
+    if (paymentService.method == PaymentServiceMethod.CASH_IN)
+      throw new UserInputError('You cannot cash in with this service');
 
     const fundTransfer = await this.fundTransferService.create({
       amount,
