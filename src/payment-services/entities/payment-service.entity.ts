@@ -1,6 +1,7 @@
 import { ObjectType, Field, ID, Float } from '@nestjs/graphql';
 import { ExternalFundTransfer } from 'src/external-fund-transfers/entities/external-fund-transfer.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { PaymentServiceMethod } from '../enums/method.enum';
 import { PaymentServiceType } from '../enums/type.enum';
 
 @Entity('payment_service')
@@ -24,6 +25,13 @@ export class PaymentService {
   })
   @Field(() => PaymentServiceType)
   type: PaymentServiceType;
+
+  @Column({
+    type: 'enum',
+    enum: PaymentServiceMethod,
+  })
+  @Field(() => PaymentServiceMethod)
+  method: PaymentServiceMethod;
 
   @Column('float')
   @Field(() => Float)
