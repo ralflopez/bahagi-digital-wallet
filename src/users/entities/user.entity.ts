@@ -54,7 +54,7 @@ export class User {
   )
   externalFundTransfers: ExternalFundTransfer[];
 
-  @ManyToOne(() => Country)
+  @ManyToOne(() => Country, { onDelete: 'NO ACTION' })
   @JoinColumn()
   @Field(() => Country)
   country: Country;
