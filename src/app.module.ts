@@ -24,6 +24,7 @@ import { ExternalFundTransfer } from './external-fund-transfers/entities/externa
 import { PaymongoController } from './paymongo/paymongo.controller';
 import { PaymongoModule } from './paymongo/paymongo.module';
 import { BalancesModule } from './balances/balances.module';
+import { SeedsModule } from './seeds/seeds.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { BalancesModule } from './balances/balances.module';
     ExternalFundTransfersModule,
     PaymongoModule,
     BalancesModule,
+    SeedsModule,
   ],
   controllers: [AppController, PaymongoController],
   providers: [AppService],

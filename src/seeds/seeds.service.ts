@@ -41,7 +41,15 @@ export class SeedsService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    console.log('seeding db');
+    try {
+      await this.seed();
+    } catch (e) {
+      await this.seed();
+    }
+  }
+
+  async seed() {
+    console.log('SEEDING DATABASE');
     await this.clearDatabase();
 
     const phpCurrency = await this.currencyRepository.save({
@@ -82,7 +90,7 @@ export class SeedsService implements OnApplicationBootstrap {
 
     const [user1, user2] = await this.userRepository.save([
       {
-        id: uuid.v4(),
+        id: 'd32da716-8561-4af1-90ab-90432fb58ad3',
         country: phCountry,
         email: 'demo@email.com',
         name: 'demo',
@@ -92,7 +100,7 @@ export class SeedsService implements OnApplicationBootstrap {
         createdAt: new Date(Date.now()),
       },
       {
-        id: uuid.v4(),
+        id: '70c3aff2-a280-421d-adcf-c933857f3aa0',
         country: phCountry,
         email: 'demo2@email.com',
         name: 'demo2',
@@ -104,7 +112,7 @@ export class SeedsService implements OnApplicationBootstrap {
     ]);
 
     // funds
-    this.externalFundTransferRepository.save([
+    await this.externalFundTransferRepository.save([
       {
         details: await this.fundTransferRepository.save({
           amount: 10000,
@@ -161,17 +169,14 @@ export class SeedsService implements OnApplicationBootstrap {
         sender: user2,
       },
     ]);
+    console.log('SEEDING DONE');
   }
 
   async clearDatabase() {
     const details: RepoEntittyPair[] = [
       {
-        entity: InternalFundTransfer,
-        repo: this.internalFundTransfer,
-      },
-      {
-        entity: ExternalFundTransfer,
-        repo: this.externalFundTransferRepository,
+        entity: FundTransfer,
+        repo: this.fundTransferRepository,
       },
       { entity: User, repo: this.userRepository },
       { entity: PaymentService, repo: this.paymentServiceRepository },
