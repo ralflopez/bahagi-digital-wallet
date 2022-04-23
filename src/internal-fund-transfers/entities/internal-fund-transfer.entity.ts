@@ -16,17 +16,20 @@ export class InternalFundTransfer {
   @Field(() => ID)
   readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.sentFund)
+  @ManyToOne(() => User, { onDelete: 'NO ACTION' })
   @JoinColumn()
   @Field(() => User)
   sender: User;
 
-  @ManyToOne(() => User, (user) => user.receivedFund)
+  @ManyToOne(() => User, { onDelete: 'NO ACTION' })
   @JoinColumn()
   @Field(() => User)
   receiver: User;
 
-  @OneToOne(() => FundTransfer)
+  @OneToOne(() => FundTransfer, (f) => f.internalFundTransfer, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
   @JoinColumn()
   @Field(() => FundTransfer)
   details: FundTransfer;

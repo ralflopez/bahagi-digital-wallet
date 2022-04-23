@@ -1,6 +1,5 @@
 import { ObjectType, Field, ID, Float } from '@nestjs/graphql';
-import { ExternalFundTransfer } from 'src/external-fund-transfers/entities/external-fund-transfer.entity';
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { PaymentServiceMethod } from '../enums/method.enum';
 import { PaymentServiceType } from '../enums/type.enum';
 
@@ -45,10 +44,4 @@ export class PaymentService {
   @Column('float', { default: 0 })
   @Field(() => Float, { defaultValue: 0 })
   base_fee = 0;
-
-  @OneToMany(
-    () => ExternalFundTransfer,
-    (externalFundTransfer) => externalFundTransfer.paymentService,
-  )
-  externalFundTransfers: ExternalFundTransfer[];
 }

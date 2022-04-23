@@ -1,14 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { User } from 'src/users/entities/user.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Currency } from '../../currencies/entities/currency.entity';
 
 @Entity('country')
@@ -23,7 +14,7 @@ export class Country {
   @Field()
   name: string;
 
-  @ManyToOne(() => Currency, { onDelete: 'SET NULL', cascade: true })
+  @ManyToOne(() => Currency)
   @JoinColumn()
   @Field(() => Currency)
   currency: Currency;
@@ -31,10 +22,4 @@ export class Country {
   @Column()
   @Field()
   mobileCode: string;
-
-  @OneToMany(() => User, (user) => user.country, {
-    onDelete: 'SET NULL',
-    cascade: true,
-  })
-  users: User[];
 }

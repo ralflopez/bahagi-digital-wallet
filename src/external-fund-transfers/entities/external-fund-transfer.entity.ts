@@ -19,19 +19,21 @@ export class ExternalFundTransfer {
   @Field(() => ID)
   id: string; // payment intent id from paymongoD if applicable
 
-  @OneToOne(() => FundTransfer, { onDelete: 'CASCADE', nullable: false })
+  @OneToOne(() => FundTransfer, (f) => f.externalFundTransfer, {
+    onDelete: 'CASCADE',
+    cascade: true,
+  })
   @JoinColumn()
   @Field(() => FundTransfer)
   details: FundTransfer;
 
-  @ManyToOne(() => User, (user) => user.externalFundTransfers)
+  @ManyToOne(() => User, { onDelete: 'NO ACTION' })
+  @JoinColumn()
   @Field(() => User)
   user: User;
 
-  @ManyToOne(
-    () => PaymentService,
-    (paymentService) => paymentService.externalFundTransfers,
-  )
+  @ManyToOne(() => PaymentService)
+  @JoinColumn()
   paymentService: PaymentService;
 
   @Column({
