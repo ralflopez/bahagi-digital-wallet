@@ -69,7 +69,7 @@ export class InternalFundTransfersService {
       .createQueryBuilder('internal_fund_transfer')
       .leftJoin('internal_fund_transfer.details', 'details')
       .leftJoin('internal_fund_transfer.sender', 'sender')
-      .select('SUM(details.amount)', 'total')
+      .select('SUM(details.amount + details.fee)', 'total')
       .where('internal_fund_transfer.senderId = :userId', { userId })
       .getRawOne();
 

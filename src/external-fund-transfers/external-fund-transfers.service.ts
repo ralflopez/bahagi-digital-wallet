@@ -151,13 +151,26 @@ export class ExternalFundTransfersService {
     const userExternalFundTransfer = await this.externalFundTransferRepository
       .createQueryBuilder('external_fund_transfer')
       .leftJoin('external_fund_transfer.details', 'details')
-      .select('SUM(details.amount + details.fee)', 'total')
+      .select(
+        'SUM(details.amount) AS amount, SUM(details.fee) AS fee, external_fund_transfer.method',
+      )
+      .groupBy('external_fund_transfer.method')
       .where('external_fund_transfer.userId = :userId', { userId: userId })
       .andWhere('details.status = :status', {
         status: FundTransferStatus.SUCCESS,
       })
-      .getRawOne();
-    return userExternalFundTransfer;
+      .getRawMany();
+
+    const cashIn = userExternalFundTransfer.find((e) => e.method === 'CASH_IN');
+    const cashOut = userExternalFundTransfer.find(
+      (e) => e.method === 'CASH_OUT',
+    );
+    if (!cashIn || !cashOut) return { total: 0 };
+
+    const total =
+      cashIn.amount - (Math.abs(cashOut.amount) + Math.abs(cashOut.fee));
+
+    return { total };
   }
 
   findOne(id: string) {

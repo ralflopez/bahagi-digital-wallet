@@ -4,6 +4,7 @@ import { UsersService } from 'src/users/users.service';
 import { LogInInput } from './dto/login.input';
 import { SignUpInput } from './dto/signup.input';
 import * as bcrypt from 'bcrypt';
+import { UserInputError } from 'apollo-server-errors';
 
 @Injectable()
 export class AuthService {
@@ -20,14 +21,13 @@ export class AuthService {
     return newUser;
   }
 
-  async logIn(loginInput: LogInInput) {
-    const user = await this.userService.findOneByEmail(loginInput.email);
+  async logIn({ email, password }: LogInInput) {
+    const user = await this.userService.findOneByEmail(email);
+    if (!user) throw new UserInputError('Incorrect email / password');
     // compare password
-    const isRightPassword = await bcrypt.compare(
-      loginInput.password,
-      user.password,
-    );
-    if (!isRightPassword) throw Error('Incorrect email / password');
+    const isRightPassword = await bcrypt.compare(password, user.password);
+    if (!isRightPassword)
+      throw new UserInputError('Incorrect email / password');
 
     return user;
   }

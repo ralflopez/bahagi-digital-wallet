@@ -1,4 +1,4 @@
-import { Resolver, Query } from '@nestjs/graphql';
+import { Resolver, Query, Args, Float } from '@nestjs/graphql';
 import {
   IUserSession,
   UserSession,
@@ -10,8 +10,8 @@ import { Balance } from './entities/balance.entity';
 export class BalancesResolver {
   constructor(private readonly balancesService: BalancesService) {}
 
-  @Query(() => String, { name: 'totalBalance' })
-  getBalance(@UserSession() userSession: IUserSession) {
-    return this.balancesService.getTotalBalance(userSession.id);
+  @Query(() => Float, { name: 'totalBalance' })
+  getBalance(@UserSession() { id }: IUserSession) {
+    return this.balancesService.getTotalBalance(id);
   }
 }
