@@ -34,6 +34,10 @@ import { SeedsModule } from './seeds/seeds.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       context: ({ req, res }): GQLContext => ({ req, res }),
+      cors: {
+        origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
+        credentials: true,
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
