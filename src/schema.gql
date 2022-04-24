@@ -170,6 +170,7 @@ type Query {
   externalFundTransfer(id: String!): ExternalFundTransfer!
   externalFundTransfers: [ExternalFundTransfer!]!
   internalFundTransfers: [InternalFundTransfer!]!
+  myUser: User!
   paymentService(id: String!): PaymentService!
   paymentServices: [PaymentService!]!
   totalBalance: Float!

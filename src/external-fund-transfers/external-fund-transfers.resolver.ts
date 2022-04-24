@@ -8,8 +8,13 @@ import {
 } from 'src/auth/decorators/user-session.decorator';
 import { UpdateExternalFundTransferStatusInput } from './dto/update-cash-out-status.input';
 import { CashInInput } from './dto/cash-in.input';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { Role } from 'src/users/enums/role.enum';
+import { AuthorizationGuard } from 'src/auth/guard/roles.guard';
 
 @Resolver(() => ExternalFundTransfer)
+@AuthGuard()
 export class ExternalFundTransfersResolver {
   constructor(
     private readonly externalFundTransfersService: ExternalFundTransfersService,
@@ -73,6 +78,8 @@ export class ExternalFundTransfersResolver {
     return this.externalFundTransfersService.findOne(id);
   }
 
+  @Roles(Role.ADMIN)
+  @AuthorizationGuard()
   @Mutation(() => Int)
   removeExternalFundTransfer(@Args('id') id: string) {
     return this.externalFundTransfersService.remove(id);

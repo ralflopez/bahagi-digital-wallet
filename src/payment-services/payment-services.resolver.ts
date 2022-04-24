@@ -1,4 +1,7 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { AuthorizationGuard } from 'src/auth/guard/roles.guard';
+import { Role } from 'src/users/enums/role.enum';
 import { CreatePaymentServiceInput } from './dto/create-payment-service.input';
 import { PaymentService } from './entities/payment-service.entity';
 import { PaymentServiceService } from './payment-services.service';
@@ -7,6 +10,8 @@ import { PaymentServiceService } from './payment-services.service';
 export class PaymentServiceResolver {
   constructor(private readonly paymentServiceService: PaymentServiceService) {}
 
+  @Roles(Role.USER)
+  @AuthorizationGuard()
   @Mutation(() => PaymentService)
   createPaymentService(
     @Args('createPaymentGatewayInput')
@@ -25,6 +30,8 @@ export class PaymentServiceResolver {
     return this.paymentServiceService.findOne(id);
   }
 
+  @Roles(Role.ADMIN)
+  @AuthorizationGuard()
   @Mutation(() => Int)
   removePaymentService(@Args('id') id: string) {
     return this.paymentServiceService.remove(id);

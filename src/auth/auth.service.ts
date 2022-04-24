@@ -4,7 +4,8 @@ import { UsersService } from 'src/users/users.service';
 import { LogInInput } from './dto/login.input';
 import { SignUpInput } from './dto/signup.input';
 import * as bcrypt from 'bcrypt';
-import { UserInputError } from 'apollo-server-errors';
+import { AuthenticationError, UserInputError } from 'apollo-server-errors';
+import { AuthGuard } from './guard/auth.guard';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +30,13 @@ export class AuthService {
     if (!isRightPassword)
       throw new UserInputError('Incorrect email / password');
 
+    return user;
+  }
+
+  @AuthGuard()
+  async getMyUser(userId: string) {
+    const user = await this.userService.findOne(userId);
+    if (!user) throw new AuthenticationError('You are not logged in');
     return user;
   }
 }

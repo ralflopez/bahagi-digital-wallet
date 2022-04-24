@@ -1,4 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { ExternalFundTransfersService } from 'src/external-fund-transfers/external-fund-transfers.service';
 import { InternalFundTransfersService } from 'src/internal-fund-transfers/internal-fund-transfers.service';
 import { CreateBalanceInput } from './dto/create-balance.input';
@@ -12,6 +13,7 @@ export class BalancesService {
     private externalFundTransferService: ExternalFundTransfersService,
   ) {}
 
+  @AuthGuard()
   async getTotalBalance(userId: string) {
     const totalExternal = await this.externalFundTransferService.getTotalAmount(
       userId,

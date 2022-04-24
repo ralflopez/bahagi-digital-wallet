@@ -17,7 +17,7 @@ export class RolesGuardInjectable implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (!requiredRoles[0] || requiredRoles.length < 1) {
+    if (!requiredRoles || !requiredRoles[0] || requiredRoles.length < 1) {
       return true;
     }
 

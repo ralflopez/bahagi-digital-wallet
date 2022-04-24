@@ -14,6 +14,10 @@ import { ExternalFundTransferMethod } from './enums/method.enum';
 import * as uuid from 'uuid';
 import { BalancesService } from 'src/balances/balances.service';
 import { PaymentServiceMethod } from 'src/payment-services/enums/method.enum';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { Role } from 'src/users/enums/role.enum';
+import { AuthorizationGuard } from 'src/auth/guard/roles.guard';
 
 @Injectable()
 export class ExternalFundTransfersService {
@@ -27,6 +31,7 @@ export class ExternalFundTransfersService {
     private balanceService: BalancesService,
   ) {}
 
+  @AuthGuard()
   async cashIn(
     userId: string,
     { amount, currencyId, paymentServiceId, paymentIntentId }: CashInInput,
@@ -61,6 +66,7 @@ export class ExternalFundTransfersService {
     return savedExternalFundTransfer;
   }
 
+  @AuthGuard()
   async cashOut(
     userId: string,
     { amount, currencyId, paymentServiceId }: CashOutInput,

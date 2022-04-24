@@ -1,9 +1,13 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Session } from 'src/graphql/decorators/session.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { AuthService } from './auth.service';
+import { Roles } from './decorators/role.decorator';
+import { IUserSession, UserSession } from './decorators/user-session.decorator';
 import { LogInInput } from './dto/login.input';
 import { SignUpInput } from './dto/signup.input';
+import { AuthGuard } from './guard/auth.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -45,8 +49,9 @@ export class AuthResolver {
     return user;
   }
 
-  // @Query(() => User)
-  // getMyUser(@Args('id') id: string) {
-  //   return this.authService.getMyUser(id);
-  // }
+  @Query(() => User, { name: 'myUser' })
+  @UseGuards(AuthGuard)
+  getMyUser(@UserSession() userSession: IUserSession) {
+    return this.authService.getMyUser(userSession.id);
+  }
 }
