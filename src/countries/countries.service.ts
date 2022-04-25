@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { CreateCountryInput } from './dto/create-country.input';
 import { Country } from './entities/country.entity';
 import { CurrenciesService } from 'src/currencies/currencies.service';
-import { AuthSelfGuard } from 'src/auth/guard/self.guard';
 
 @Injectable()
 export class CountriesService {

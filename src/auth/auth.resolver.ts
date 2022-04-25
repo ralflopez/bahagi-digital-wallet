@@ -49,8 +49,8 @@ export class AuthResolver {
     return user;
   }
 
+  @AuthGuard()
   @Query(() => User, { name: 'myUser' })
-  @UseGuards(AuthGuard)
   getMyUser(@UserSession() userSession: IUserSession) {
     return this.authService.getMyUser(userSession.id);
   }

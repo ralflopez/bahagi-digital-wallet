@@ -13,8 +13,8 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/users/enums/role.enum';
 import { AuthorizationGuard } from 'src/auth/guard/roles.guard';
 
-@Resolver(() => ExternalFundTransfer)
 @AuthGuard()
+@Resolver(() => ExternalFundTransfer)
 export class ExternalFundTransfersResolver {
   constructor(
     private readonly externalFundTransfersService: ExternalFundTransfersService,

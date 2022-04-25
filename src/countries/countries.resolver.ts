@@ -5,15 +5,14 @@ import { CreateCountryInput } from './dto/create-country.input';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/users/enums/role.enum';
 import { AuthorizationGuard } from 'src/auth/guard/roles.guard';
-import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Resolver(() => Country)
 export class CountriesResolver {
   constructor(private readonly countriesService: CountriesService) {}
 
-  @Mutation(() => Country)
   @Roles(Role.ADMIN)
   @AuthorizationGuard()
+  @Mutation(() => Country)
   createCountry(
     @Args('createCountryInput') createCountryInput: CreateCountryInput,
   ) {
@@ -30,9 +29,9 @@ export class CountriesResolver {
     return this.countriesService.findOne(id);
   }
 
-  @Mutation(() => Int)
   @Roles(Role.ADMIN)
   @AuthorizationGuard()
+  @Mutation(() => Int)
   removeCountry(@Args('id') id: string) {
     return this.countriesService.remove(id);
   }

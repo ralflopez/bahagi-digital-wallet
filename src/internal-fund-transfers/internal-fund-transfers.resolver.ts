@@ -10,8 +10,8 @@ import { CreateInternalFundTransfer } from './dto/create-internal-fund-transfer.
 import { UserInputError } from 'apollo-server-errors';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 
-@Resolver(() => InternalFundTransfer)
 @AuthGuard()
+@Resolver(() => InternalFundTransfer)
 export class InternalFundTransfersResolver {
   constructor(
     private readonly internalFundTransfersService: InternalFundTransfersService,
