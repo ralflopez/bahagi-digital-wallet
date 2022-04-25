@@ -12,7 +12,12 @@ export class PaymentServiceResolver {
 
   @Roles(Role.USER)
   @AuthorizationGuard()
-  @Mutation(() => PaymentService)
+  @Mutation(() => PaymentService, {
+    name: 'createPaymentService',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Creates a new payment service.`,
+  })
   createPaymentService(
     @Args('createPaymentGatewayInput')
     createPaymentGatewayInput: CreatePaymentServiceInput,
@@ -20,19 +25,32 @@ export class PaymentServiceResolver {
     return this.paymentServiceService.create(createPaymentGatewayInput);
   }
 
-  @Query(() => [PaymentService], { name: 'paymentServices' })
+  @Query(() => [PaymentService], {
+    name: 'paymentServices',
+    description: `#### Description
+    \nReturns all available payment services.`,
+  })
   findAll() {
     return this.paymentServiceService.findAll();
   }
 
-  @Query(() => PaymentService, { name: 'paymentService' })
+  @Query(() => PaymentService, {
+    name: 'paymentService',
+    description: `#### Description
+    \nRetuns a payment service given an ID.`,
+  })
   findOne(@Args('id') id: string) {
     return this.paymentServiceService.findOne(id);
   }
 
   @Roles(Role.ADMIN)
   @AuthorizationGuard()
-  @Mutation(() => Int)
+  @Mutation(() => Int, {
+    name: 'removePaymentService',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Deletes a payment service.`,
+  })
   removePaymentService(@Args('id') id: string) {
     return this.paymentServiceService.remove(id);
   }

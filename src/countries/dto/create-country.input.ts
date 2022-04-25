@@ -8,9 +8,13 @@ export class CreateCountryInput {
   @Field()
   id: string;
 
-  @Field()
+  @Field({
+    description: 'ID from currency schema',
+  })
   currencyId: string;
 
-  @Field()
+  @Field({
+    description: 'Countrys area code (e.g. +63 for Philippines)',
+  })
   mobileCode: string;
 }

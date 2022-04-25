@@ -23,8 +23,11 @@ type Country {
 }
 
 input CreateCountryInput {
+  """ID from currency schema"""
   currencyId: String!
   id: String!
+
+  """Countrys area code (e.g. +63 for Philippines)"""
   mobileCode: String!
   name: String!
 }
@@ -50,14 +53,6 @@ input CreatePaymentServiceInput {
   name: String!
   percent_fee: Float!
   type: PaymentServiceType!
-}
-
-input CreateUserInput {
-  countryId: String!
-  email: String!
-  name: String!
-  password: String!
-  phoneNumber: String!
 }
 
 type Currency {
@@ -104,34 +99,197 @@ type InternalFundTransfer {
   sender: User!
 }
 
+"""Required arguments to log in the user"""
 input LogInInput {
   email: String!
   password: String!
 }
 
 type Mutation {
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Creates a record for incoming user funds from external source (e.g credit card).
+      
+  * Status will be set to PROCESSING.
+  """
   cashIn(cashInInput: CashInInput!): ExternalFundTransfer!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Creates a record for outgoing user funds.
+      
+  * Status will be set to PROCESSING.
+  """
   cashOut(cashOutInput: CashOutInput!): ExternalFundTransfer!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Creates a new country.
+  """
   createCountry(createCountryInput: CreateCountryInput!): Country!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Creates a new currency.
+  """
   createCurrency(createCurrencyInput: CreateCurrencyInput!): Currency!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Creates a record for a fund transfer between two users.
+  """
   createInternalFundTransfer(createInternalFundTransferInput: CreateInternalFundTransfer!): InternalFundTransfer!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Creates a new payment service.
+  """
   createPaymentService(createPaymentGatewayInput: CreatePaymentServiceInput!): PaymentService!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Calls paymongo api to create a payment intent (tells paymongo that you are expecting a payment).
+  """
   createPaymongoPaymentIntent(paymentIntentInput: PaymentIntentInput!): PaymentIntentResult!
-  createUser(createUserInput: CreateUserInput!): User!
+
+  """
+  #### Description
+      
+  Logs in the user using session authentication. 
+      
+  #### Example
+      
+  ```
+      {
+        email: "demo@email.com", 
+        password: "password"
+      }
+  """
   logIn(logIninput: LogInInput!): User!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Deletes a country.
+  """
   removeCountry(id: String!): Int!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Deletes a country.
+  """
   removeCurrency(id: String!): Int!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Deletes a cash in / cash out record.
+  """
   removeExternalFundTransfer(id: String!): Int!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Deletes a payment service.
+  """
   removePaymentService(id: String!): Int!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Deltes a user.
+  """
   removeUser(id: String!): String!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Sends money from the logged in user to another user
+  """
   sendMoney(sendMoneyInput: SendMoneyInput!): InternalFundTransfer!
+
+  """
+  #### Description
+      
+  Creates and logs in the user using session authentication. 
+      
+  #### Example
+      
+  ```
+      {
+        email: "newUser@email.com", 
+        name: "name"
+        password: "password",
+        phoneNumber: "+639271234567",
+        countryId: "ph'
+      }
+  """
   signUp(signUpInput: SignUpInput!): User!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Updates the cashIn status.
+  """
   updateCashInStatus(updateExternalFundTransferStatusInput: UpdateExternalFundTransferStatusInput!): ExternalFundTransfer!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Updaates the cashOut status.
+  """
   updateCashOutStatus(updateExternalFundTransferStatusInput: UpdateExternalFundTransferStatusInput!): ExternalFundTransfer!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Updates user information.
+  """
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 input PaymentIntentInput {
+  """Amount should be in full currencies (e.g Pesos instead of cents)"""
   amount: Float!
 }
 
@@ -163,18 +321,108 @@ enum PaymentServiceType {
 }
 
 type Query {
+  """
+  #### Description
+      
+  Returns a list of available countries.
+  """
   countries: [Country!]!
+
+  """
+  #### Description
+      
+  Returns a country given its ID.
+  """
   country(id: String!): Country!
+
+  """
+  #### Description
+      
+  Returns a list of available currencies.
+  """
   currencies: [Currency!]!
+
+  """
+  #### Description
+      Returns a currency given its ID
+  """
   currency(id: String!): Currency!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Returns a cash in / cash out record given an ID.
+  """
   externalFundTransfer(id: String!): ExternalFundTransfer!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Returns a list of all the cash in and cash out transactions.
+  """
   externalFundTransfers: [ExternalFundTransfer!]!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Returns all the internal fund transfer records
+  """
   internalFundTransfers: [InternalFundTransfer!]!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Returns the current logged in user.
+  """
   myUser: User!
+
+  """
+  #### Description
+      
+  Retuns a payment service given an ID.
+  """
   paymentService(id: String!): PaymentService!
+
+  """
+  #### Description
+      
+  Returns all available payment services.
+  """
   paymentServices: [PaymentService!]!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Returns the total balance of the logged in user.
+  """
   totalBalance: Float!
+
+  """
+  #### Description
+      
+  * _Requires authentication_
+      
+  * Returns a user given an ID.
+  """
   user(id: String!): User!
+
+  """
+  #### Description
+      
+  * _Requires admin privileges_
+      
+  * Returns all user.
+  """
   users: [User!]!
 }
 
@@ -189,7 +437,9 @@ input SendMoneyInput {
   receiverId: String!
 }
 
+"""Required arguments to create a new user"""
 input SignUpInput {
+  """ID from the country schema"""
   countryId: String!
   email: String!
   name: String!
@@ -203,6 +453,7 @@ input UpdateExternalFundTransferStatusInput {
 }
 
 input UpdateUserInput {
+  """ID from the country schema"""
   countryId: String
   email: String!
   id: String!

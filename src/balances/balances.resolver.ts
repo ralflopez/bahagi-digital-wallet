@@ -12,7 +12,12 @@ export class BalancesResolver {
   constructor(private readonly balancesService: BalancesService) {}
 
   @AuthGuard()
-  @Query(() => Float, { name: 'totalBalance' })
+  @Query(() => Float, {
+    name: 'totalBalance',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Returns the total balance of the logged in user.`,
+  })
   getBalance(@UserSession() { id }: IUserSession) {
     return this.balancesService.getTotalBalance(id);
   }

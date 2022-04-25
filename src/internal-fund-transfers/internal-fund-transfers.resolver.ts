@@ -17,7 +17,12 @@ export class InternalFundTransfersResolver {
     private readonly internalFundTransfersService: InternalFundTransfersService,
   ) {}
 
-  @Mutation(() => InternalFundTransfer, { name: 'createInternalFundTransfer' })
+  @Mutation(() => InternalFundTransfer, {
+    name: 'createInternalFundTransfer',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Creates a record for a fund transfer between two users.`,
+  })
   create(
     @Args('createInternalFundTransferInput')
     createInternalFundTransferInput: CreateInternalFundTransfer,
@@ -28,7 +33,12 @@ export class InternalFundTransfersResolver {
     );
   }
 
-  @Mutation(() => InternalFundTransfer, { name: 'sendMoney' })
+  @Mutation(() => InternalFundTransfer, {
+    name: 'sendMoney',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Sends money from the logged in user to another user`,
+  })
   sendMoney(
     @Args('sendMoneyInput') sendMoneyInput: SendMoneyInput,
     @UserSession() userSession: IUserSession,
@@ -42,7 +52,12 @@ export class InternalFundTransfersResolver {
     );
   }
 
-  @Query(() => [InternalFundTransfer], { name: 'internalFundTransfers' })
+  @Query(() => [InternalFundTransfer], {
+    name: 'internalFundTransfers',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Returns all the internal fund transfer records`,
+  })
   findAll() {
     return this.internalFundTransfersService.findAll();
   }

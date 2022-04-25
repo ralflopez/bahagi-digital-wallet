@@ -1,6 +1,8 @@
 import { Field, InputType } from '@nestjs/graphql';
 
-@InputType()
+@InputType({
+  description: 'Required arguments to log in the user',
+})
 export class LogInInput {
   @Field()
   email: string;

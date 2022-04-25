@@ -12,30 +12,48 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput);
-  }
-
-  @Query(() => [User], { name: 'users' })
+  @Roles(Role.ADMIN)
+  @AuthorizationGuard()
+  @Query(() => [User], {
+    name: 'users',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Returns all user.`,
+  })
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Query(() => User, { name: 'user' })
+  @AuthGuard()
+  @Query(() => User, {
+    name: 'user',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Returns a user given an ID.`,
+  })
   findOne(@Args('id') id: string) {
     return this.usersService.findOne(id);
   }
 
-  @Roles(Role.ADMIN)
-  @AuthorizationGuard()
-  @Mutation(() => User)
+  @AuthGuard()
+  @Mutation(() => User, {
+    name: 'updateUser',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Updates user information.`,
+  })
   updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return this.usersService.update(updateUserInput.id, updateUserInput);
   }
 
-  @AuthGuard()
-  @Mutation(() => String)
+  @Roles(Role.ADMIN)
+  @AuthorizationGuard()
+  @Mutation(() => String, {
+    name: 'removeUser',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Deltes a user.`,
+  })
   removeUser(@Args('id') id: string) {
     return this.usersService.remove(id);
   }

@@ -14,6 +14,8 @@ export class CreateUserInput {
   @Field()
   phoneNumber: string;
 
-  @Field()
+  @Field({
+    description: 'ID from the country schema',
+  })
   countryId: string;
 }

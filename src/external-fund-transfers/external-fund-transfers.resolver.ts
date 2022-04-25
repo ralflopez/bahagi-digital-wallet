@@ -30,7 +30,13 @@ export class ExternalFundTransfersResolver {
   // );
   // }
 
-  @Mutation(() => ExternalFundTransfer, { name: 'cashIn' })
+  @Mutation(() => ExternalFundTransfer, {
+    name: 'cashIn',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Creates a record for incoming user funds from external source (e.g credit card).
+    \n* Status will be set to PROCESSING.`,
+  })
   cashIn(
     @Args('cashInInput') cashInInput: CashInInput,
     @UserSession() userSession: IUserSession,
@@ -41,7 +47,13 @@ export class ExternalFundTransfersResolver {
     );
   }
 
-  @Mutation(() => ExternalFundTransfer, { name: 'cashOut' })
+  @Mutation(() => ExternalFundTransfer, {
+    name: 'cashOut',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Creates a record for outgoing user funds.
+    \n* Status will be set to PROCESSING.`,
+  })
   cashOut(
     @Args('cashOutInput') cashOutInput: CashOutInput,
     @UserSession() userSession: IUserSession,
@@ -52,7 +64,12 @@ export class ExternalFundTransfersResolver {
     );
   }
 
-  @Mutation(() => ExternalFundTransfer, { name: 'updateCashInStatus' })
+  @Mutation(() => ExternalFundTransfer, {
+    name: 'updateCashInStatus',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Updates the cashIn status.`,
+  })
   updateCashInStatus(
     @Args('updateExternalFundTransferStatusInput')
     { id, status }: UpdateExternalFundTransferStatusInput,
@@ -60,7 +77,12 @@ export class ExternalFundTransfersResolver {
     return this.externalFundTransfersService.updateCashInStatus(id, status);
   }
 
-  @Mutation(() => ExternalFundTransfer, { name: 'updateCashOutStatus' })
+  @Mutation(() => ExternalFundTransfer, {
+    name: 'updateCashOutStatus',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Updaates the cashOut status.`,
+  })
   updateCashOutStatus(
     @Args('updateExternalFundTransferStatusInput')
     { id, status }: UpdateExternalFundTransferStatusInput,
@@ -68,19 +90,34 @@ export class ExternalFundTransfersResolver {
     return this.externalFundTransfersService.updateCashOutStatus(id, status);
   }
 
-  @Query(() => [ExternalFundTransfer], { name: 'externalFundTransfers' })
+  @Query(() => [ExternalFundTransfer], {
+    name: 'externalFundTransfers',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Returns a list of all the cash in and cash out transactions.`,
+  })
   findAll() {
     return this.externalFundTransfersService.findAll();
   }
 
-  @Query(() => ExternalFundTransfer, { name: 'externalFundTransfer' })
+  @Query(() => ExternalFundTransfer, {
+    name: 'externalFundTransfer',
+    description: `#### Description
+    \n* _Requires authentication_
+    \n* Returns a cash in / cash out record given an ID.`,
+  })
   findOne(@Args('id') id: string) {
     return this.externalFundTransfersService.findOne(id);
   }
 
   @Roles(Role.ADMIN)
   @AuthorizationGuard()
-  @Mutation(() => Int)
+  @Mutation(() => Int, {
+    name: 'removeExternalFundTransfer',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Deletes a cash in / cash out record.`,
+  })
   removeExternalFundTransfer(@Args('id') id: string) {
     return this.externalFundTransfersService.remove(id);
   }

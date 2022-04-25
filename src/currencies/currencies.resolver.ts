@@ -12,26 +12,44 @@ export class CurrenciesResolver {
 
   @Roles(Role.ADMIN)
   @AuthorizationGuard()
-  @Mutation(() => Currency)
+  @Mutation(() => Currency, {
+    name: 'createCurrency',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Creates a new currency.`,
+  })
   createCurrency(
     @Args('createCurrencyInput') createCurrencyInput: CreateCurrencyInput,
   ) {
     return this.currenciesService.create(createCurrencyInput);
   }
 
-  @Query(() => [Currency], { name: 'currencies' })
+  @Query(() => [Currency], {
+    name: 'currencies',
+    description: `#### Description
+    \nReturns a list of available currencies.`,
+  })
   findAll() {
     return this.currenciesService.findAll();
   }
 
-  @Query(() => Currency, { name: 'currency' })
+  @Query(() => Currency, {
+    name: 'currency',
+    description: `#### Description
+    \Returns a currency given its ID`,
+  })
   findOne(@Args('id') id: string) {
     return this.currenciesService.findOne(id);
   }
 
   @Roles(Role.ADMIN)
   @AuthorizationGuard()
-  @Mutation(() => Int)
+  @Mutation(() => Int, {
+    name: 'removeCurrency',
+    description: `#### Description
+    \n* _Requires admin privileges_
+    \n* Deletes a country.`,
+  })
   removeCurrency(@Args('id') id: string) {
     return this.currenciesService.remove(id);
   }
