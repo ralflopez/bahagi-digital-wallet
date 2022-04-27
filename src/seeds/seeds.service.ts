@@ -109,6 +109,16 @@ export class SeedsService implements OnApplicationBootstrap {
         role: Role.USER,
         createdAt: new Date(Date.now()),
       },
+      {
+        id: '56c3aff2-a280-421d-adcf-c933857f3ba1',
+        country: phCountry,
+        email: 'admin@email.com',
+        name: 'admin',
+        password: await this.generatePassword(),
+        phoneNumber: '+631234534577',
+        createdAt: new Date(Date.now()),
+        role: Role.ADMIN,
+      },
     ]);
 
     // funds
