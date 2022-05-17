@@ -35,17 +35,21 @@ import { SeedsModule } from './seeds/seeds.module';
       sortSchema: true,
       context: ({ req, res }): GQLContext => ({ req, res }),
       cors: {
-        origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
+        origin: [
+          'http://localhost:3000',
+          'https://studio.apollographql.com',
+          process.env.BASE_URL,
+        ],
         credentials: true,
       },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'user',
-      password: 'password',
-      database: 'db',
+      host: process.env.DB_HOST || 'localhost',
+      port: Number(process.env.DB_PORT) || 5432,
+      username: process.env.DB_USERNAME || 'user',
+      password: process.env.DB_PASSWORD || 'password',
+      database: process.env.DB_NAME || 'db',
       synchronize: true,
       entities: [
         User,
