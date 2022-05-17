@@ -1,73 +1,150 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# 💳 Bahagi E - Wallet
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+An e wallet Graphql API using [Paymongo](https://www.paymongo.com/) to accept real money payments
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# 📝 Documentaion
 
-## Description
+- [Apollo Studio](https://studio.apollographql.com/sandbox/explorer) (Recommended)
+  - Endpoint: http://localhost:4000/graphql
+- [Graphql Playground](http://localhost:4000/graphql)
+- [Github](https://github.com/ralflopez/bahagi-digital-wallet)
+- [Paymongo](https://developers.paymongo.com/docs)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# ✨ Features
 
-## Installation
+- Cash In (With credit card)
+- Cash Out (To Gcash)
+- Send Money
+- Receive Money
 
-```bash
-$ npm install
+# 👩‍💻 Tech Stack
+
+- Typescript
+- Nest.js
+- Grahql
+- PostgreSQL
+- Docker
+
+# 📕 Guide
+
+The following guide uses [Paymongo Third Party Library (Javascript)](https://www.npmjs.com/package/paymongo)
+
+## Cash In
+
+1. **Create Payment Intent**
+   This will request a payment intent to paymongo
+
+```graphql
+mutation CreatePaymongoPaymentIntent($paymentIntentInput: PaymentIntentInput!) {
+  createPaymongoPaymentIntent(paymentIntentInput: $paymentIntentInput) {
+    clientKey
+  }
+}
 ```
 
-## Running the app
+2. **Extract client key and payment intent id from the previous request**
+   We will use these variables later
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```javascript
+const clientKey =
+  createPaymentIntentResult.createPaymongoPaymentIntent.clientKey;
+const paymentIntentId = clientKey.split('_client')[0];
 ```
 
-## Test
+3. **Make a payment method**
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```javascript
+const paymentMethodResult = await paymongo.paymentMethods.create({
+  data: {
+    attributes: {
+      type: 'card',
+      details: {
+        card_number: 5455590000000009,
+        exp_month: 05,
+        exp_year: 25,
+        cvc: 123,
+      },
+    },
+  },
+});
+const paymentMethodId = paymentMethodResult.data.id;
 ```
 
-## Support
+4. **Tell server to cash in**
+   This will create a database record with a default status of PROCESSING. We will change it later to SUCCESSFUL if payment from paymongo is confirmed
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```grpahql
+mutation CashIn($cashInInput: CashInInput!) {
+  cashIn(cashInInput: $cashInInput) {
+    id
+    method
+    details {
+      amount
+    }
+  }
+}
+```
 
-## Stay in touch
+5. **Attach payment intent**
+   This will attach the payment method to the payment intent and will return a status
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```javascript
+const response = await paymongo.paymentIntents.attach(paymentIntentId, {
+  data: {
+    attributes: {
+      client_key: clientKey,
+      payment_method: paymentMethodId,
+    },
+  },
+});
 
-## License
+const paymentIntent = response.data;
+const paymentIntentStatus = paymentIntent.attributes.status;
+```
 
-Nest is [MIT licensed](LICENSE).
+5. **Handle payment status**
+   The following example updates the database record to SUCCESSFUL if the payment succedded
+
+```
+if (paymentIntentStatus === "awaiting_next_action") {
+        // Render your modal for 3D Secure Authentication since next_action has a value. You can access the next action via paymentIntent.attributes.next_action.
+      } else if (paymentIntentStatus === "succeeded") {
+        // You already received your customer's payment. You can show a success message from this condition.
+        await udpateCashInStatus({
+          variables: {
+            updateExternalFundTransferStatusInput: {
+              id: cashInId,
+              status: FundTransferStatus.Success,
+            },
+          },
+        })
+      } else if (paymentIntentStatus === "awaiting_payment_method") {
+        // The PaymentIntent encountered a processing error. You can refer to paymentIntent.attributes.last_payment_error to check the error and render the appropriate error message.
+      } else if (paymentIntentStatus === "processing") {
+        // You need to requery the PaymentIntent after a second or two. This is a transitory status and should resolve to `succeeded` or `awaiting_payment_method` quickly.
+      }
+```
+
+## Cash Out
+
+Test the following in the graphql playground
+
+```graphql
+mutation CashOut($cashOutInput: CashOutInput!) {
+  cashOut(cashOutInput: $cashOutInput) {
+    id
+  }
+}
+```
+
+## Send Money
+
+Test the following in the graphql playground
+
+```graphql
+mutation CashOut($sendMoneyInput: SendMoneyInput!) {
+  sendMoney(sendMoneyInput: $sendMoneyInput) {
+    id
+  }
+}
+```
