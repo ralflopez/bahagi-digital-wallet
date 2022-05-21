@@ -51,12 +51,15 @@ import { SeedsModule } from './seeds/seeds.module';
       password: process.env.DB_PASSWORD || 'password',
       database: process.env.DB_NAME || 'db',
       synchronize: true,
-      ssl: true,
-      extra: {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      },
+      ssl: process.env.NODE_ENV === 'production' ? true : false,
+      extra:
+        process.env.NODE_ENV === 'production'
+          ? {
+              ssl: {
+                rejectUnauthorized: false,
+              },
+            }
+          : null,
       entities: [
         User,
         Country,
