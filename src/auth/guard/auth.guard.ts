@@ -7,7 +7,6 @@ export class AuthGuardInjectable implements CanActivate {
   canActivate(
     context: ExecutionContextHost,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log('guard');
     const request = context.getArgByIndex(2).req;
     return Boolean(request?.session?.user?.id);
   }
