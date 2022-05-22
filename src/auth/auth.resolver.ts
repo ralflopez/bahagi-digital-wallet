@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { request } from 'http';
 import { Session } from 'src/graphql/decorators/session.decorator';
 import { User } from 'src/users/entities/user.entity';
@@ -40,6 +40,16 @@ export class AuthResolver {
     };
 
     return user;
+  }
+
+  @Mutation(() => Int, {
+    name: 'logOut',
+    description: `#### Description
+    \nClears out Session for logged in user.`,
+  })
+  async logout(@Session() session: any) {
+    session.destroy();
+    return 1;
   }
 
   @Mutation(() => User, {

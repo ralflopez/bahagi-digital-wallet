@@ -191,6 +191,13 @@ type Mutation {
   """
   #### Description
       
+  Clears out Session for logged in user.
+  """
+  logOut: Int!
+
+  """
+  #### Description
+      
   * _Requires admin privileges_
       
   * Deletes a country.
