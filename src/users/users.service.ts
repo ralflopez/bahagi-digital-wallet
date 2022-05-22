@@ -43,16 +43,30 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const user = await this.usersRepository.findOne({
-      where: {
-        id,
-      },
-      relations: {
-        country: {
-          currency: true,
+    let user: User;
+    if (id.includes('@')) {
+      user = await this.usersRepository.findOne({
+        where: {
+          email: id,
         },
-      },
-    });
+        relations: {
+          country: {
+            currency: true,
+          },
+        },
+      });
+    } else {
+      user = await this.usersRepository.findOne({
+        where: {
+          id,
+        },
+        relations: {
+          country: {
+            currency: true,
+          },
+        },
+      });
+    }
 
     return user;
   }

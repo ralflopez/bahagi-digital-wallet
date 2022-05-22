@@ -29,7 +29,7 @@ export class UsersResolver {
     name: 'user',
     description: `#### Description
     \n* _Requires authentication_
-    \n* Returns a user given an ID.`,
+    \n* Returns a user given an ID / email.`,
   })
   findOne(@Args('id') id: string) {
     return this.usersService.findOne(id);

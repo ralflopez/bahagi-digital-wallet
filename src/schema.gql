@@ -412,7 +412,7 @@ type Query {
       
   * _Requires authentication_
       
-  * Returns a user given an ID.
+  * Returns a user given an ID / email.
   """
   user(id: String!): User!
 
