@@ -2,6 +2,15 @@
 
 An e wallet Graphql API using [Paymongo](https://www.paymongo.com/) to accept real money payments
 
+# 🌐 Preview
+
+![Preview](https://github.com/ralflopez/bahagi-digital-wallet/raw/main/preview.gif)
+
+# 🌎 Live
+
+- [Frontend (Vercel)](https://bahagi-digital-wallet.vercel.app/)
+- [Backend (Heroku)](https://bahagi-e-wallet.herokuapp.com/graphql)
+
 # 📝 Documentaion
 
 - [Apollo Studio](https://studio.apollographql.com/sandbox/explorer) (Recommended)
