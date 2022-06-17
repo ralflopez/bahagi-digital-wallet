@@ -116,9 +116,9 @@ const paymentIntentStatus = paymentIntent.attributes.status;
 
 ```
 if (paymentIntentStatus === "awaiting_next_action") {
-        // Render your modal for 3D Secure Authentication since next_action has a value. You can access the next action via paymentIntent.attributes.next_action.
+        /* Render your modal for 3D Secure Authentication since next_action has a value. You can access the next action via paymentIntent.attributes.next_action. */
       } else if (paymentIntentStatus === "succeeded") {
-        // You already received your customer's payment. You can show a success message from this condition.
+        /* You already received your customer's payment. You can show a success message from this condition. */
         await udpateCashInStatus({
           variables: {
             updateExternalFundTransferStatusInput: {
@@ -128,9 +128,9 @@ if (paymentIntentStatus === "awaiting_next_action") {
           },
         })
       } else if (paymentIntentStatus === "awaiting_payment_method") {
-        // The PaymentIntent encountered a processing error. You can refer to paymentIntent.attributes.last_payment_error to check the error and render the appropriate error message.
+        /* The PaymentIntent encountered a processing error. You can refer to paymentIntent.attributes.last_payment_error to check the error and render the appropriate error message. */
       } else if (paymentIntentStatus === "processing") {
-        // You need to requery the PaymentIntent after a second or two. This is a transitory status and should resolve to `succeeded` or `awaiting_payment_method` quickly.
+        /* You need to requery the PaymentIntent after a second or two. This is a transitory status and should resolve to `succeeded` or `awaiting_payment_method` quickly. */
       }
 ```
 
