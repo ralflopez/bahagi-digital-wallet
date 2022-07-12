@@ -39,6 +39,7 @@ import { SeedsModule } from './seeds/seeds.module';
           'http://localhost:3000',
           'https://studio.apollographql.com',
           process.env.BASE_URL,
+          '*',
         ],
         credentials: true,
       },
